@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="Interactive introduction to complex numbers: i, Argand plane, polar form, addition and multiplication, Euler’s formula, and applications." />
+  <title>Complex numbers — a visual brief | CJF Hal AI</title>
+  <meta name="apple-mobile-web-app-title" content="Complex numbers" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --real: #4ade80;
+      --imag: #a78bfa;
+      --sum: #fbbf24;
+      --border: rgba(148, 163, 184, 0.14);
+      --z1: #4ade80;
+      --z2: #a78bfa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(ellipse 120% 80% at 50% -25%, #1e3a5f 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 1.25rem 1.15rem 3rem; }
+    .page-brand { margin-bottom: 1.5rem; }
+    .page-brand-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.75rem, 3vw, 1.5rem);
+      flex-wrap: wrap;
+    }
+    .brand-logo {
+      max-width: min(260px, 78vw);
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 6px 32px rgba(0, 0, 0, 0.45);
+    }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.45rem, 4vw, 1.95rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+      font-size: 1.02rem;
+    }
+    h2 {
+      margin: 2rem 0 0.6rem;
+      font-size: 1.18rem;
+      font-weight: 650;
+      color: #7dd3fc;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.22);
+      padding-bottom: 0.35rem;
+    }
+    h3 { margin: 1.2rem 0 0.45rem; font-size: 1.05rem; color: #cbd5e1; }
+    p { margin: 0.65rem 0; }
+    a { color: var(--accent); }
+    a:hover { color: #7dd3fc; }
+    .card {
+      background: var(--panel);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 1rem 1.15rem 1.2rem;
+      margin: 1rem 0;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+    }
+    .callout {
+      margin: 1rem 0;
+      padding: 0.85rem 1rem;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    ul { margin: 0.5rem 0 0.5rem 1.1rem; padding: 0; }
+    li { margin: 0.35rem 0; }
+    .diagram-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 1rem auto;
+      aspect-ratio: 1;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: #0a1224;
+      border: 1px solid var(--border);
+    }
+    #argand { cursor: crosshair; touch-action: none; }
+    .diagram-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .controls {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+    .slider-row {
+      display: grid;
+      grid-template-columns: auto 1fr minmax(4.5rem, auto);
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+    }
+    .slider-row label { color: var(--muted); min-width: 5.5rem; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .slider-row.slider-z1 label { color: rgba(167, 243, 199, 0.92); }
+    .slider-row.slider-z1 input[type="range"] { accent-color: var(--z1); }
+    .slider-row.slider-z1 .val { color: rgba(187, 247, 208, 0.95); }
+    .slider-row.slider-z2 label { color: rgba(216, 201, 254, 0.92); }
+    .slider-row.slider-z2 input[type="range"] { accent-color: var(--z2); }
+    .slider-row.slider-z2 .val { color: rgba(221, 214, 254, 0.95); }
+    input[type="range"]:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.45);
+      outline-offset: 2px;
+    }
+    .val { font-variant-numeric: tabular-nums; color: var(--text); text-align: right; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      justify-content: center;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .dot { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+    .katex-display { margin: 0.75rem 0 !important; overflow-x: auto; }
+    .control-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.65rem;
+      margin-top: 0.75rem;
+    }
+    .control-actions button {
+      font: inherit;
+      font-size: 0.82rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.65);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .control-actions button:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+    .control-actions button:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.5);
+      outline-offset: 2px;
+    }
+    .control-actions .snap-z1 { border-color: rgba(74, 222, 128, 0.35); }
+    .control-actions .snap-z1:hover { border-color: rgba(74, 222, 128, 0.55); background: rgba(74, 222, 128, 0.08); }
+    .control-actions .snap-z2 { border-color: rgba(167, 139, 250, 0.35); }
+    .control-actions .snap-z2:hover { border-color: rgba(167, 139, 250, 0.55); background: rgba(167, 139, 250, 0.08); }
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-brand">
+      <div class="page-brand-inner">
+        <img
+          src="header-logo.svg"
+          alt="Hal AI by CJF"
+          class="brand-logo"
+          width="260"
+          height="88"
+          decoding="async"
+        />
+      </div>
+    </header>
+
+    <h1>Complex numbers</h1>
+    <p class="subtitle">A clear brief: the plane, <span class="math">i</span>, polar form, and why they matter</p>
+
+    <section class="card">
+      <h2>What is a complex number?</h2>
+      <p>
+        A <strong>complex number</strong> is an ordered pair of real numbers written as
+        <span class="math">z = a + bi</span>, where <span class="math">a</span> is the <strong>real part</strong>
+        and <span class="math">b</span> is the <strong>imaginary part</strong>. You can think of it as a single point
+        in a 2D plane: move <span class="math">a</span> along the horizontal axis and <span class="math">b</span> along the vertical axis.
+      </p>
+      <p>
+        This “complex plane” (often called the <strong>Argand diagram</strong>) is the same idea as Cartesian <span class="math">(x,y)</span> coordinates,
+        with the horizontal axis labelled “real” and the vertical axis labelled “imaginary.”
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>What is <span class="math">i</span>?</h2>
+      <p>
+        The symbol <span class="math">i</span> denotes the <strong>imaginary unit</strong>: a number defined by the property
+      </p>
+      <div class="callout">\displaystyle i^2 = -1</div>
+      <p>
+        There is no real number whose square is <span class="math">-1</span>, so we <em>extend</em> the number system once, in a controlled way,
+        by adjoining <span class="math">i</span>. Then <span class="math">bi</span> means “<span class="math">b</span> times that unit,”
+        and every complex number <span class="math">a + bi</span> is built from ordinary real addition and multiplication, using the rule above whenever <span class="math">i^2</span> appears.
+      </p>
+      <p>
+        Powers of <span class="math">i</span> cycle: <span class="math">i^0=1,\ i^1=i,\ i^2=-1,\ i^3=-i,\ i^4=1,\ \ldots</span>
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Polar form: modulus <span class="math">r</span> and argument <span class="math">\theta</span></h2>
+      <p>
+        The distance from the origin to <span class="math">z=a+bi</span> is the <strong>modulus</strong>
+      </p>
+      <div class="callout">\displaystyle r = |z| = \sqrt{a^2 + b^2}</div>
+      <p>
+        The angle measured from the positive real axis to the segment joining the origin to <span class="math">z</span> is the
+        <strong>argument</strong> <span class="math">\theta = \arg(z)</span>.
+        By convention, the <strong>principal value</strong> of the argument is taken in the interval
+        <span class="math">(-\pi,\pi]</span>: angles in radians with <span class="math">-\pi &lt; \theta \le \pi</span>
+        (an open cut on the negative real axis, so each direction from the origin has one standard angle).
+        In the right triangle formed by the real axis, the vertical side to <span class="math">(a,b)</span>, and the hypotenuse of length <span class="math">r</span>,
+        you have <span class="math">a = r\cos\theta</span> and <span class="math">b = r\sin\theta</span>, so
+      </p>
+      <div class="callout">\displaystyle z = r(\cos\theta + i\sin\theta)</div>
+      <p class="diagram-hint">Drag the point in the diagram, or use the sliders. The hypotenuse is <span class="math">r</span>; the angle is <span class="math">\theta</span>.</p>
+      <div class="diagram-wrap" id="argandWrap">
+        <canvas id="argand" width="520" height="520" aria-label="Argand diagram: drag to set a complex number"></canvas>
+      </div>
+      <div class="controls" id="polarControls">
+        <div class="slider-row">
+          <label for="sReal">Real <span class="math">a</span></label>
+          <input type="range" id="sReal" min="-3" max="3" step="0.02" value="2.1" />
+          <span class="val" id="vReal">2.10</span>
+        </div>
+        <div class="slider-row">
+          <label for="sImag">Imag <span class="math">b</span></label>
+          <input type="range" id="sImag" min="-3" max="3" step="0.02" value="2.1" />
+          <span class="val" id="vImag">2.10</span>
+        </div>
+        <div class="control-actions">
+          <button type="button" id="resetPolar" aria-label="Reset real and imaginary sliders to default">Reset</button>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--real)"></span>Real component on horizontal axis</span>
+        <span><span class="dot" style="background:var(--imag)"></span>Imaginary component on vertical axis</span>
+        <span><span class="dot" style="background:var(--accent)"></span><span class="math">r</span> (hypotenuse)</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Addition</h2>
+      <p>
+        Complex numbers add <strong>componentwise</strong>, like vectors in the plane:
+      </p>
+      <div class="callout">\displaystyle (a+bi) + (c+di) = (a+c) + (b+d)i</div>
+      <p>
+        Geometrically, that is the usual “parallelogram rule” for adding vectors from the origin.
+        Try the sliders below: <span class="math">z_1</span> is green, <span class="math">z_2</span> is violet, and their sum <span class="math">z_1+z_2</span> is gold.
+      </p>
+      <div class="diagram-wrap" style="max-width: 520px;">
+        <canvas id="addCanvas" width="520" height="520" aria-label="Addition of two complex numbers"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-z1"><label><span class="math">z_1</span> real</label><input type="range" id="a1" min="-2.5" max="2.5" step="0.02" value="1" /><span class="val" id="a1v">1.00</span></div>
+        <div class="slider-row slider-z1"><label><span class="math">z_1</span> imag</label><input type="range" id="b1" min="-2.5" max="2.5" step="0.02" value="0.6" /><span class="val" id="b1v">0.60</span></div>
+        <div class="slider-row slider-z2"><label><span class="math">z_2</span> real</label><input type="range" id="a2" min="-2.5" max="2.5" step="0.02" value="-0.4" /><span class="val" id="a2v">-0.40</span></div>
+        <div class="slider-row slider-z2"><label><span class="math">z_2</span> imag</label><input type="range" id="b2" min="-2.5" max="2.5" step="0.02" value="1.1" /><span class="val" id="b2v">1.10</span></div>
+        <div class="control-actions">
+          <button type="button" id="resetAdd" aria-label="Reset z₁ and z₂ components to default">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Multiplication</h2>
+      <p>
+        Algebraically, multiply as for polynomials and use <span class="math">i^2=-1</span>:
+      </p>
+      <div class="callout">\displaystyle (a+bi)(c+di) = (ac-bd) + (ad+bc)i</div>
+      <p>
+        In polar form, multiplication is easy to read: write each factor as a length times a direction,
+        <span class="math">z_k = r_k e^{i\theta_k}</span>. Multiplying the two numbers <strong>multiplies their lengths</strong> and <strong>adds their angles</strong>, because exponentials with imaginary exponents behave like exponentials with real ones:
+        <span class="math">e^{i\theta_1} e^{i\theta_2} = e^{i(\theta_1+\theta_2)}</span>.
+        So the product has modulus <span class="math">r_1 r_2</span> and argument <span class="math">\theta_1 + \theta_2</span> (up to adding <span class="math">2\pi</span> if you need another branch).
+      </p>
+      <div class="callout">\displaystyle r_1 e^{i\theta_1} \cdot r_2 e^{i\theta_2} = r_1 r_2\, e^{i(\theta_1+\theta_2)}</div>
+      <p>
+        Geometrically, multiplying by a <em>fixed</em> complex number <span class="math">w</span> sends every point to one that is <strong>scaled</strong> by <span class="math">|w|</span> and <strong>rotated</strong> about the origin by <span class="math">\arg(w)</span>.
+        The diagram shows <span class="math">z_1</span>, <span class="math">z_2</span>, and their product <span class="math">z_1 z_2</span>.
+      </p>
+      <div class="diagram-wrap" style="max-width: 520px;">
+        <canvas id="mulCanvas" width="520" height="520" aria-label="Multiplication of two complex numbers"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-z1"><label><span class="math">z_1</span> angle <span class="math">\theta_1</span></label><input type="range" id="t1" min="-314" max="314" value="220" /><span class="val" id="t1v">2.20</span></div>
+        <div class="slider-row slider-z1"><label><span class="math">|z_1|</span></label><input type="range" id="r1" min="0.2" max="2" step="0.02" value="1.73" /><span class="val" id="r1v">1.73</span></div>
+        <div class="slider-row slider-z2"><label><span class="math">z_2</span> angle <span class="math">\theta_2</span></label><input type="range" id="t2" min="-314" max="314" value="214" /><span class="val" id="t2v">2.14</span></div>
+        <div class="slider-row slider-z2"><label><span class="math">|z_2|</span></label><input type="range" id="r2" min="0.2" max="2" step="0.02" value="1.73" /><span class="val" id="r2v">1.73</span></div>
+        <div class="control-actions">
+          <button type="button" id="resetMul" aria-label="Reset angles and moduli to default">Reset</button>
+          <button type="button" id="snapT1" class="snap-z1" aria-label="Snap θ₁ to nearest multiple of π/2">Snap θ₁ → π/2 grid</button>
+          <button type="button" id="snapT2" class="snap-z2" aria-label="Snap θ₂ to nearest multiple of π/2">Snap θ₂ → π/2 grid</button>
+        </div>
+      </div>
+      <p class="diagram-hint">
+        Arcs at the origin show <span class="math">\theta_1</span>, <span class="math">\theta_2</span>, and <span class="math">\theta_1+\theta_2</span> from the positive real axis.
+        The softer violet arc from the axis to <span class="math">z_2</span> is the argument of <span class="math">z_2</span>; the brighter dashed arc from the <span class="math">z_1</span> ray to the <span class="math">z_1 z_2</span> ray is the same angle <span class="math">\theta_2</span> as a rotation applied after <span class="math">z_1</span>.
+        Angle slider values are <strong>hundredths of a radian</strong> (radians = slider × 0.01).
+        <strong>Snap → π/2 grid</strong> moves that angle to the nearest of 0, ±π/2, ±π (principal axes on this range).
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Euler’s formula and <span class="math">e^{i\theta}</span></h2>
+      <p>
+        The exponential with an imaginary argument ties polar form to analysis:
+      </p>
+      <div class="callout">\displaystyle e^{i\theta} = \cos\theta + i\sin\theta</div>
+      <p>
+        So any nonzero <span class="math">z</span> can be written <span class="math">z = r e^{i\theta}</span> with <span class="math">r=|z|</span> and <span class="math">\theta=\arg(z)</span>.
+        Multiplying by <span class="math">e^{i\theta}</span> rotates by <span class="math">\theta</span>; in particular <span class="math">e^{i\pi}+1=0</span> links <span class="math">e,\ i,\ \pi,\ 1</span> in one identity.
+        That is the same “add the angles in the exponent” rule as in the multiplication diagram above.
+      </p>
+      <p>
+        For a fuller note on <span class="math">e</span> and exponentials in this collection, see
+        <a href="../Exponential%20E/index.html">e — the exponential constant</a>
+        (and related pages under <code>Maths</code>).
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Why complex numbers matter</h2>
+      <ul>
+        <li><strong>Quantum mechanics.</strong> Wavefunctions are complex-valued; probabilities come from moduli squared (<span class="math">|\psi|^2</span>). Phase matters for interference.</li>
+        <li><strong>Electrical engineering.</strong> Phasors simplify AC circuits: capacitors and inductors become multiplications by complex impedances.</li>
+        <li><strong>Signal processing.</strong> The Fourier transform naturally lives on complex exponentials <span class="math">e^{i\omega t}</span>, separating magnitude and phase.</li>
+        <li><strong>Control and dynamics.</strong> Eigenvalues of linear systems can be complex; they encode oscillation frequency and damping.</li>
+        <li><strong>Pure mathematics.</strong> The fundamental theorem of algebra: every non-constant polynomial with complex coefficients has a root in <span class="math">\mathbb{C}</span>.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>A little history</h2>
+      <p>
+        Renaissance algebraists hit equations like <span class="math">x^2+1=0</span> when solving cubics. Cardano (16th century) manipulated square roots of negatives formally;
+        Bombelli clarified rules for these quantities. The geometric picture as a plane is associated with Argand and Wessel (early 19th century), with Gauss also contributing to acceptance.
+        Hamilton later placed complex numbers on a rigorous footing as pairs of reals with a defined multiplication.
+      </p>
+      <p>
+        The modern view — complex analysis, Riemann surfaces, quantum theory — treats <span class="math">\mathbb{C}</span> as indispensable, not a trick for “impossible” square roots.
+      </p>
+    </section>
+
+    <footer>
+      Self-contained brief for learning. Open this file in a browser; diagrams use canvas and work offline except KaTeX styling (CDN).
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof katex === "undefined") return;
+      document.querySelectorAll(".callout").forEach(function (el) {
+        var t = el.textContent.trim();
+        if (t.indexOf("\\displaystyle") === 0) {
+          t = t.replace(/^\\displaystyle\s*/, "");
+        }
+        el.innerHTML = "";
+        try {
+          katex.render(t, el, { displayMode: true, throwOnError: false });
+        } catch (e) {
+          el.textContent = t;
+        }
+      });
+      document.querySelectorAll("span.math").forEach(function (el) {
+        var t = el.textContent.trim();
+        if (!t) return;
+        try {
+          katex.render(t, el, { displayMode: false, throwOnError: false });
+        } catch (e) { /* keep text */ }
+      });
+    });
+  </script>
+  <script>
+    (function () {
+      var scale = 68;
+      var DEFAULT_POLAR = { a: 2.1, b: 2.1 };
+      var DEFAULT_ADD = { a1: 1, b1: 0.6, a2: -0.4, b2: 1.1 };
+      var DEFAULT_MUL = { t1: 220, r1: 1.73, t2: 214, r2: 1.73 };
+      /** Nearest multiple of π/2 in slider units (−314…314 ≈ −π…π). */
+      function snapAngleSliderToPiHalf(v) {
+        var grid = [-314, -157, 0, 157, 314];
+        var best = grid[0];
+        var bestD = Math.abs(v - best);
+        for (var i = 1; i < grid.length; i++) {
+          var d = Math.abs(v - grid[i]);
+          if (d < bestD) {
+            bestD = d;
+            best = grid[i];
+          }
+        }
+        return best;
+      }
+      function toXY(a, b, w, h) {
+        var cx = w / 2, cy = h / 2;
+        return { x: cx + a * scale, y: cy - b * scale };
+      }
+      function drawGrid(ctx, w, h) {
+        ctx.fillStyle = "#0a1224";
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = "rgba(148,163,184,0.12)";
+        ctx.lineWidth = 1;
+        var cx = w / 2, cy = h / 2;
+        for (var g = -4; g <= 4; g++) {
+          var o = toXY(g, 0, w, h);
+          ctx.beginPath();
+          ctx.moveTo(o.x, 0);
+          ctx.lineTo(o.x, h);
+          ctx.stroke();
+          o = toXY(0, g, w, h);
+          ctx.beginPath();
+          ctx.moveTo(0, o.y);
+          ctx.lineTo(w, o.y);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = "rgba(148,163,184,0.35)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx, h);
+        ctx.stroke();
+        ctx.fillStyle = "#64748b";
+        ctx.font = "13px Segoe UI, sans-serif";
+        ctx.fillText("Re", w - 28, cy - 8);
+        ctx.fillText("Im", cx + 8, 18);
+      }
+      function drawPolarDiagram(a, b) {
+        var canvas = document.getElementById("argand");
+        if (!canvas) return;
+        var ctx = canvas.getContext("2d");
+        var w = canvas.width, h = canvas.height;
+        drawGrid(ctx, w, h);
+        var P = toXY(a, b, w, h);
+        var cx = w / 2, cy = h / 2;
+        var r = Math.sqrt(a * a + b * b);
+        var theta = Math.atan2(b, a);
+        ctx.strokeStyle = "rgba(74,222,128,0.85)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(P.x, cy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "rgba(167,139,250,0.9)";
+        ctx.beginPath();
+        ctx.moveTo(P.x, cy);
+        ctx.lineTo(P.x, P.y);
+        ctx.stroke();
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(P.x, P.y);
+        ctx.stroke();
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.arc(P.x, P.y, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#0f172a";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        var arcR = Math.min(0.55 * scale * r, 0.35 * Math.min(w, h));
+        if (arcR > 10 && r > 0.05) {
+          var cAng = Math.atan2(P.y - cy, P.x - cx);
+          ctx.strokeStyle = "rgba(251,191,36,0.95)";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, arcR, 0, cAng, cAng < 0);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "14px Segoe UI, sans-serif";
+        ctx.fillText("z = " + a.toFixed(2) + " + " + b.toFixed(2) + "i", 12, h - 44);
+        ctx.fillText("r = " + r.toFixed(3), 12, h - 24);
+        ctx.fillText("θ = " + theta.toFixed(3) + " rad", 12, h - 4);
+      }
+      var sReal = document.getElementById("sReal");
+      var sImag = document.getElementById("sImag");
+      var vReal = document.getElementById("vReal");
+      var vImag = document.getElementById("vImag");
+      function syncFromSliders() {
+        var a = parseFloat(sReal.value);
+        var b = parseFloat(sImag.value);
+        vReal.textContent = a.toFixed(2);
+        vImag.textContent = b.toFixed(2);
+        drawPolarDiagram(a, b);
+      }
+      var canvas = document.getElementById("argand");
+      function fromEvent(ev) {
+        var rect = canvas.getBoundingClientRect();
+        var sx = (ev.clientX - rect.left) / rect.width;
+        var sy = (ev.clientY - rect.top) / rect.height;
+        var w = canvas.width, h = canvas.height;
+        var a = (sx * w - w / 2) / scale;
+        var b = -(sy * h - h / 2) / scale;
+        a = Math.max(-3, Math.min(3, a));
+        b = Math.max(-3, Math.min(3, b));
+        return { a: a, b: b };
+      }
+      var dragging = false;
+      canvas.addEventListener("pointerdown", function (e) {
+        dragging = true;
+        canvas.setPointerCapture(e.pointerId);
+        var p = fromEvent(e);
+        sReal.value = p.a;
+        sImag.value = p.b;
+        syncFromSliders();
+      });
+      canvas.addEventListener("pointermove", function (e) {
+        if (!dragging) return;
+        var p = fromEvent(e);
+        sReal.value = p.a;
+        sImag.value = p.b;
+        syncFromSliders();
+      });
+      canvas.addEventListener("pointerup", function () { dragging = false; });
+      sReal.addEventListener("input", syncFromSliders);
+      sImag.addEventListener("input", syncFromSliders);
+      syncFromSliders();
+      document.getElementById("resetPolar").addEventListener("click", function () {
+        sReal.value = String(DEFAULT_POLAR.a);
+        sImag.value = String(DEFAULT_POLAR.b);
+        syncFromSliders();
+      });
+
+      function drawAdd() {
+        var c = document.getElementById("addCanvas");
+        var a1 = parseFloat(document.getElementById("a1").value);
+        var b1 = parseFloat(document.getElementById("b1").value);
+        var a2 = parseFloat(document.getElementById("a2").value);
+        var b2 = parseFloat(document.getElementById("b2").value);
+        document.getElementById("a1v").textContent = a1.toFixed(2);
+        document.getElementById("b1v").textContent = b1.toFixed(2);
+        document.getElementById("a2v").textContent = a2.toFixed(2);
+        document.getElementById("b2v").textContent = b2.toFixed(2);
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var O = { x: w / 2, y: h / 2 };
+        var Z1 = toXY(a1, b1, w, h);
+        var Z2 = toXY(a2, b2, w, h);
+        var S = toXY(a1 + a2, b1 + b2, w, h);
+        function arrow(x0, y0, x1, y1, color, lw) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = lw || 2.5;
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+        }
+        arrow(O.x, O.y, Z1.x, Z1.y, "rgba(74,222,128,0.95)", 3);
+        arrow(O.x, O.y, Z2.x, Z2.y, "rgba(167,139,250,0.95)", 3);
+        arrow(Z1.x, Z1.y, S.x, S.y, "rgba(167,139,250,0.45)", 2);
+        arrow(Z2.x, Z2.y, S.x, S.y, "rgba(74,222,128,0.45)", 2);
+        arrow(O.x, O.y, S.x, S.y, "rgba(251,191,36,0.95)", 3);
+        function dot(x, y, fill, label) {
+          ctx.fillStyle = fill;
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "#0f172a";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          if (label) {
+            ctx.fillStyle = "#e2e8f0";
+            ctx.font = "13px Segoe UI, sans-serif";
+            ctx.fillText(label, x + 10, y - 8);
+          }
+        }
+        dot(Z1.x, Z1.y, "#4ade80", "z₁");
+        dot(Z2.x, Z2.y, "#a78bfa", "z₂");
+        dot(S.x, S.y, "#fbbf24", "z₁+z₂");
+      }
+      ["a1", "b1", "a2", "b2"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawAdd);
+      });
+      drawAdd();
+      document.getElementById("resetAdd").addEventListener("click", function () {
+        document.getElementById("a1").value = String(DEFAULT_ADD.a1);
+        document.getElementById("b1").value = String(DEFAULT_ADD.b1);
+        document.getElementById("a2").value = String(DEFAULT_ADD.a2);
+        document.getElementById("b2").value = String(DEFAULT_ADD.b2);
+        drawAdd();
+      });
+
+      function normAngle(t) {
+        var u = t;
+        while (u > Math.PI) u -= 2 * Math.PI;
+        while (u <= -Math.PI) u += 2 * Math.PI;
+        return u;
+      }
+      /** Arc in mathematical angle convention: 0 = +Re, +angle = toward +Im (up on screen). */
+      function strokeMathArc(ctx, cx, cy, radius, t0, t1, color, lineWidth, dash) {
+        if (radius < 4) return;
+        var steps = Math.max(16, Math.ceil(Math.abs(t1 - t0) * radius * 0.35));
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth || 2;
+        ctx.setLineDash(dash || []);
+        ctx.beginPath();
+        for (var i = 0; i <= steps; i++) {
+          var u = t0 + (t1 - t0) * (i / steps);
+          var x = cx + radius * Math.cos(u);
+          var y = cy - radius * Math.sin(u);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      function labelOnMathArc(ctx, cx, cy, radius, tMid, text, color) {
+        var lx = cx + (radius + 14) * Math.cos(tMid);
+        var ly = cy - (radius + 14) * Math.sin(tMid);
+        ctx.fillStyle = color || "#e2e8f0";
+        ctx.font = "italic 13px Segoe UI, system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, lx, ly);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+      }
+      function drawMul() {
+        var c = document.getElementById("mulCanvas");
+        var t1 = parseFloat(document.getElementById("t1").value) * 0.01;
+        var t2 = parseFloat(document.getElementById("t2").value) * 0.01;
+        var r1v = parseFloat(document.getElementById("r1").value);
+        var r2v = parseFloat(document.getElementById("r2").value);
+        document.getElementById("t1v").textContent = t1.toFixed(2);
+        document.getElementById("t2v").textContent = t2.toFixed(2);
+        document.getElementById("r1v").textContent = r1v.toFixed(2);
+        document.getElementById("r2v").textContent = r2v.toFixed(2);
+        var a1 = r1v * Math.cos(t1), b1 = r1v * Math.sin(t1);
+        var a2 = r2v * Math.cos(t2), b2 = r2v * Math.sin(t2);
+        var pr = a1 * a2 - b1 * b2;
+        var pi = a1 * b2 + b1 * a2;
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var cx = w / 2, cy = h / 2;
+        var O = { x: cx, y: cy };
+        var Z1 = toXY(a1, b1, w, h);
+        var Z2 = toXY(a2, b2, w, h);
+        var P = toXY(pr, pi, w, h);
+        var tSum = t1 + t2;
+        var argProd = Math.atan2(pi, pr);
+        var tSumPr = normAngle(tSum);
+
+        var R1 = 24, R2 = 40, R3 = 56, Rbetween = 32;
+        if (r1v < 0.08 || r2v < 0.08) {
+          R1 = 0;
+          Rbetween = 0;
+        }
+
+        strokeMathArc(ctx, cx, cy, R3, 0, tSumPr, "rgba(251,191,36,0.55)", 2.5, []);
+        strokeMathArc(ctx, cx, cy, R2, 0, t2, "rgba(167,139,250,0.34)", 2.5, []);
+        strokeMathArc(ctx, cx, cy, R1, 0, t1, "rgba(74,222,128,0.65)", 2.5, []);
+        if (Rbetween > 0 && r1v >= 0.08 && r2v >= 0.08) {
+          strokeMathArc(ctx, cx, cy, Rbetween, t1, t1 + t2, "rgba(192,132,252,0.95)", 2.5, [5, 4]);
+        }
+
+        if (R1 > 0 && Math.abs(t1) > 0.04) {
+          labelOnMathArc(ctx, cx, cy, R1, t1 * 0.5, "θ₁", "#86efac");
+        }
+        if (Math.abs(t2) > 0.04) {
+          labelOnMathArc(ctx, cx, cy, R2, t2 * 0.5, "θ₂", "#c4b5fd");
+        }
+        if (Math.abs(tSumPr) > 0.04) {
+          labelOnMathArc(ctx, cx, cy, R3, tSumPr * 0.5, "θ₁+θ₂", "#fcd34d");
+        }
+        if (Rbetween > 0 && Math.abs(t2) > 0.04 && r1v >= 0.08 && r2v >= 0.08) {
+          labelOnMathArc(ctx, cx, cy, Rbetween, t1 + t2 * 0.5, "+θ₂", "#e9d5ff");
+        }
+
+        ctx.strokeStyle = "rgba(74,222,128,0.9)";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(Z1.x, Z1.y);
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(167,139,250,0.9)";
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(Z2.x, Z2.y);
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(251,191,36,0.95)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(P.x, P.y);
+        ctx.stroke();
+        function dot(x, y, fill, label) {
+          ctx.fillStyle = fill;
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "#0f172a";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "13px Segoe UI, sans-serif";
+          ctx.fillText(label, x + 8, y - 8);
+        }
+        dot(Z1.x, Z1.y, "#4ade80", "z₁");
+        dot(Z2.x, Z2.y, "#a78bfa", "z₂");
+        dot(P.x, P.y, "#fbbf24", "z₁z₂");
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("|z₁z₂| = " + (r1v * r2v).toFixed(3), 10, h - 36);
+        ctx.fillText(
+          "arg(z₁z₂) = " + argProd.toFixed(3) + " rad  ·  principal(θ₁+θ₂) = " + tSumPr.toFixed(3) + " rad",
+          10,
+          h - 18
+        );
+      }
+      ["t1", "r1", "t2", "r2"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawMul);
+      });
+      drawMul();
+      document.getElementById("resetMul").addEventListener("click", function () {
+        document.getElementById("t1").value = String(DEFAULT_MUL.t1);
+        document.getElementById("r1").value = String(DEFAULT_MUL.r1);
+        document.getElementById("t2").value = String(DEFAULT_MUL.t2);
+        document.getElementById("r2").value = String(DEFAULT_MUL.r2);
+        drawMul();
+      });
+      document.getElementById("snapT1").addEventListener("click", function () {
+        var el = document.getElementById("t1");
+        el.value = String(snapAngleSliderToPiHalf(parseInt(el.value, 10) || 0));
+        drawMul();
+      });
+      document.getElementById("snapT2").addEventListener("click", function () {
+        var el = document.getElementById("t2");
+        el.value = String(snapAngleSliderToPiHalf(parseInt(el.value, 10) || 0));
+        drawMul();
+      });
+    })();
+  </script>
+</body>
+</html>
