@@ -6,9 +6,9 @@ The page is presented as a **Hal AI by CJF** branded educational note with inter
 
 ## What the page covers
 
-- **What a complex number is** — **z = a + bi** as a point in the plane; real and imaginary axes
+- **What a complex number is** — **z = a + bi** as coordinates **(a,b)** in the plane; **|z|** as distance from the origin (hypotenuse), and why **i** ties geometry to multiplication
 - **What i is** — **i² = −1** and extending the number system
-- **Polar form** — modulus **r**, argument **θ**, and the right-triangle picture linking **a**, **b**, **r**, and **θ**
+- **Polar form** — **r = |z|** (same quantity: hypotenuse / radius, **√(a²+b²)**), argument **θ**, and the right-triangle link to **a**, **b**
 - **Addition** — componentwise sum and the parallelogram rule
 - **Multiplication** — algebraic rule; polar view (moduli multiply, arguments add) and rotation–scaling; Euler’s rule linked to the same angle-addition picture
 - **Euler’s formula** — **e^(iθ) = cos θ + i sin θ** and **z = r e^(iθ)**; link to the companion page on **e**
@@ -18,7 +18,7 @@ The page is presented as a **Hal AI by CJF** branded educational note with inter
 ## Interactive features
 
 - **Argand diagram** — drag the point or use sliders; shows **r**, **θ**, and the real/imaginary legs
-- **Addition diagram** — two numbers and their sum with adjustable components
+- **Addition diagram** — two numbers and their sum with adjustable components (same geometry as **vector addition**; see the linked **[Vectors in the plane](../Vectors/index.html)** guide)
 - **Multiplication diagram** — polar-style controls with **θ₁**, **θ₂**, **θ₁+θ₂** arcs from the axis; a softer arc for **arg(z₂)** and a brighter dashed **+θ₂** arc between the **z₁** and **z₁z₂** rays; sliders for **z₁** and **z₂** use **green** and **violet** accents to match the diagram
 - **Reset** — each diagram section has a **Reset** button that restores that section’s default slider values (see below)
 - **Snap → π/2 grid** (multiplication only) — snaps **θ₁** or **θ₂** to the nearest of **0**, **±π/2**, **±π** on the slider scale (nearest principal axis in this range)

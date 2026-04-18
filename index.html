@@ -221,6 +221,16 @@
         This “complex plane” (often called the <strong>Argand diagram</strong>) is the same idea as Cartesian <span class="math">(x,y)</span> coordinates,
         with the horizontal axis labelled “real” and the vertical axis labelled “imaginary.”
       </p>
+      <p>
+        <strong>How to picture <span class="math">z=a+bi</span>:</strong> treat it as the point with coordinates <span class="math">(a,b)</span> in that plane.
+        The modulus <span class="math">|z|</span> is the ordinary straight-line distance from the origin to that point—the same length as the
+        <strong>hypotenuse</strong> of the right triangle whose legs run along the axes from <span class="math">(0,0)</span> to meet at <span class="math">(a,b)</span>.
+      </p>
+      <p>
+        That coordinate view is the right starting point. The symbol <span class="math">i</span> is not just a label, though: it fixes the rules of
+        <strong>multiplication</strong>, so distances and angles combine in a way that matches <strong>rotation and scaling</strong> in the plane (see below).
+        So you get both familiar geometry and useful algebra in one package.
+      </p>
     </section>
 
     <section class="card">
@@ -242,20 +252,30 @@
     <section class="card">
       <h2>Polar form: modulus <span class="math">r</span> and argument <span class="math">\theta</span></h2>
       <p>
-        The distance from the origin to <span class="math">z=a+bi</span> is the <strong>modulus</strong>
+        Polar form describes the <strong>same</strong> number <span class="math">z=a+bi</span> by <strong>how far</strong> it sits from the origin and
+        <strong>which way</strong> it points. The distance is the <strong>modulus</strong>. It is written <span class="math">r</span> or <span class="math">|z|</span>—those symbols mean the <strong>same thing</strong>.
+      </p>
+      <p>
+        Concretely, <span class="math">r = |z|</span> is the length of the segment from <span class="math">(0,0)</span> to <span class="math">(a,b)</span>.
+        In the right triangle formed by the real axis, the vertical side up to <span class="math">(a,b)</span>, and that slanted segment, the slanted side is the
+        <strong>hypotenuse</strong>; its length is <span class="math">r</span>. If you think of circles centred at the origin, <span class="math">r</span> is also the
+        <strong>radius</strong> of the circle on which <span class="math">z</span> lies. Pythagoras gives the value from the coordinates:
       </p>
       <div class="callout">\displaystyle r = |z| = \sqrt{a^2 + b^2}</div>
       <p>
         The angle measured from the positive real axis to the segment joining the origin to <span class="math">z</span> is the
         <strong>argument</strong> <span class="math">\theta = \arg(z)</span>.
-        By convention, the <strong>principal value</strong> of the argument is taken in the interval
-        <span class="math">(-\pi,\pi]</span>: angles in radians with <span class="math">-\pi &lt; \theta \le \pi</span>
-        (an open cut on the negative real axis, so each direction from the origin has one standard angle).
+        By convention, the <strong>principal value</strong> of the argument is taken with
+        <span class="math">\theta \in \left(-\pi,\,\pi\right]</span>
+        (radians: <span class="math">-\pi &lt; \theta \le \pi</span>; an open cut on the negative real axis, so each direction from the origin has one standard angle).
         In the right triangle formed by the real axis, the vertical side to <span class="math">(a,b)</span>, and the hypotenuse of length <span class="math">r</span>,
         you have <span class="math">a = r\cos\theta</span> and <span class="math">b = r\sin\theta</span>, so
       </p>
       <div class="callout">\displaystyle z = r(\cos\theta + i\sin\theta)</div>
-      <p class="diagram-hint">Drag the point in the diagram, or use the sliders. The hypotenuse is <span class="math">r</span>; the angle is <span class="math">\theta</span>.</p>
+      <p class="diagram-hint">
+        Drag the point or use the sliders. The cyan segment from the origin to <span class="math">z</span> has length <span class="math">r = |z|</span> (hypotenuse and radius);
+        numerically <span class="math">r=\sqrt{a^2+b^2}</span>. The gold arc shows <span class="math">\theta</span>; the readout below lists <span class="math">\theta</span> in radians and degrees.
+      </p>
       <div class="diagram-wrap" id="argandWrap">
         <canvas id="argand" width="520" height="520" aria-label="Argand diagram: drag to set a complex number"></canvas>
       </div>
@@ -277,7 +297,7 @@
       <div class="legend">
         <span><span class="dot" style="background:var(--real)"></span>Real component on horizontal axis</span>
         <span><span class="dot" style="background:var(--imag)"></span>Imaginary component on vertical axis</span>
-        <span><span class="dot" style="background:var(--accent)"></span><span class="math">r</span> (hypotenuse)</span>
+        <span><span class="dot" style="background:var(--accent)"></span><span class="math">r=|z|</span> (hypotenuse / radius, <span class="math">\sqrt{a^2+b^2}</span>)</span>
       </div>
     </section>
 
@@ -289,6 +309,10 @@
       <div class="callout">\displaystyle (a+bi) + (c+di) = (a+c) + (b+d)i</div>
       <p>
         Geometrically, that is the usual “parallelogram rule” for adding vectors from the origin.
+        For a self-contained introduction to <strong>vectors in the plane</strong>—what they are, how to add them, how scalar multiplication scales and flips them, and how the <strong>dot product</strong> combines two vectors into a number—see
+        <a href="../Vectors/index.html">Vectors in the plane — a beginner’s guide</a>.
+      </p>
+      <p>
         Try the sliders below: <span class="math">z_1</span> is green, <span class="math">z_2</span> is violet, and their sum <span class="math">z_1+z_2</span> is gold.
       </p>
       <div class="diagram-wrap" style="max-width: 520px;">
@@ -312,14 +336,18 @@
       </p>
       <div class="callout">\displaystyle (a+bi)(c+di) = (ac-bd) + (ad+bc)i</div>
       <p>
-        In polar form, multiplication is easy to read: write each factor as a length times a direction,
-        <span class="math">z_k = r_k e^{i\theta_k}</span>. Multiplying the two numbers <strong>multiplies their lengths</strong> and <strong>adds their angles</strong>, because exponentials with imaginary exponents behave like exponentials with real ones:
+        <strong>A beautiful thing happens in polar form.</strong> Write each factor as a length times a direction,
+        <span class="math">z_k = r_k e^{i\theta_k}</span>. Then multiplying the two numbers <strong>multiplies their lengths</strong> and <strong>adds their angles</strong>—the same law as for real exponentials, now for turns in the plane:
         <span class="math">e^{i\theta_1} e^{i\theta_2} = e^{i(\theta_1+\theta_2)}</span>.
-        So the product has modulus <span class="math">r_1 r_2</span> and argument <span class="math">\theta_1 + \theta_2</span> (up to adding <span class="math">2\pi</span> if you need another branch).
+        So the product has modulus <span class="math">r_1 r_2</span> and argument <span class="math">\theta_1 + \theta_2</span> (up to adding <span class="math">2\pi</span> if you need another branch). The spread-out rectangular formula above is doing this geometry in disguise.
       </p>
       <div class="callout">\displaystyle r_1 e^{i\theta_1} \cdot r_2 e^{i\theta_2} = r_1 r_2\, e^{i(\theta_1+\theta_2)}</div>
       <p>
-        Geometrically, multiplying by a <em>fixed</em> complex number <span class="math">w</span> sends every point to one that is <strong>scaled</strong> by <span class="math">|w|</span> and <strong>rotated</strong> about the origin by <span class="math">\arg(w)</span>.
+        <strong>Rotation and scaling.</strong> Picture each complex number as an arrow from the origin. Multiplying <span class="math">z_1</span> by <span class="math">z_2</span> <strong>stretches</strong> that first arrow by <span class="math">|z_2|</span> and <strong>rotates</strong> it about the origin through <span class="math">\theta_2</span>, so it ends up pointing along <span class="math">\theta_1+\theta_2</span>.
+        That is why multiplication “mixes” real and imaginary parts: the algebra is bookkeeping, but the geometry is <strong>turn</strong> plus <strong>scale</strong>.
+        If <span class="math">|z_2|=1</span>, there is no stretch—multiplication by <span class="math">z_2</span> is a <strong>pure rotation</strong> of the plane (the unit complex numbers are exactly the rotations about the origin).
+        If <span class="math">z_2</span> is a positive real, you only <strong>rescale</strong> along the same ray.
+        More generally, multiplying the <em>whole plane</em> by a fixed <span class="math">w</span> applies the same factor <span class="math">|w|</span> and the same turn <span class="math">\arg(w)</span> to <strong>every</strong> point from the origin—one of the reasons complex numbers are so useful in waves, circuits, and linear systems.
         The diagram shows <span class="math">z_1</span>, <span class="math">z_2</span>, and their product <span class="math">z_1 z_2</span>.
       </p>
       <div class="diagram-wrap" style="max-width: 520px;">
@@ -357,7 +385,7 @@
       </p>
       <p>
         For a fuller note on <span class="math">e</span> and exponentials in this collection, see
-        <a href="../Exponential%20E/index.html">e — the exponential constant</a>
+        <a href="https://ttoffer.github.io/Exponential/" rel="noopener noreferrer">e — the exponential constant</a>
         (and related pages under <code>Maths</code>).
       </p>
     </section>
@@ -498,6 +526,25 @@
         ctx.moveTo(cx, cy);
         ctx.lineTo(P.x, P.y);
         ctx.stroke();
+        if (r > 0.18) {
+          var mx = (cx + P.x) * 0.5;
+          var my = (cy + P.y) * 0.5;
+          var dx = P.x - cx;
+          var dy = P.y - cy;
+          var dlen = Math.sqrt(dx * dx + dy * dy) || 1;
+          var px = (-dy / dlen) * 16;
+          var py = (dx / dlen) * 16;
+          ctx.save();
+          ctx.font = "italic 12px Segoe UI, system-ui, sans-serif";
+          ctx.fillStyle = "rgba(125, 211, 252, 0.98)";
+          ctx.strokeStyle = "rgba(15, 23, 42, 0.75)";
+          ctx.lineWidth = 3;
+          if (typeof ctx.strokeText === "function") {
+            ctx.strokeText("r = |z|", mx + px, my + py);
+          }
+          ctx.fillText("r = |z|", mx + px, my + py);
+          ctx.restore();
+        }
         ctx.fillStyle = "#fbbf24";
         ctx.beginPath();
         ctx.arc(P.x, P.y, 7, 0, Math.PI * 2);
@@ -514,11 +561,21 @@
           ctx.arc(cx, cy, arcR, 0, cAng, cAng < 0);
           ctx.stroke();
         }
+        var thetaDeg = theta * 180 / Math.PI;
         ctx.fillStyle = "#e2e8f0";
-        ctx.font = "14px Segoe UI, sans-serif";
-        ctx.fillText("z = " + a.toFixed(2) + " + " + b.toFixed(2) + "i", 12, h - 44);
-        ctx.fillText("r = " + r.toFixed(3), 12, h - 24);
-        ctx.fillText("θ = " + theta.toFixed(3) + " rad", 12, h - 4);
+        ctx.font = "13px Segoe UI, sans-serif";
+        ctx.fillText("z = " + a.toFixed(2) + " + " + b.toFixed(2) + "i", 12, h - 56);
+        ctx.fillText("|z| = r = " + r.toFixed(3) + "  (\u221a(a\u00b2+b\u00b2), hypotenuse & radius)", 12, h - 38);
+        ctx.font = "12px Segoe UI, sans-serif";
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillText("Same length as the cyan segment from the origin to z.", 12, h - 22);
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "13px Segoe UI, sans-serif";
+        ctx.fillText(
+          "\u03b8 = " + theta.toFixed(3) + " rad  (" + thetaDeg.toFixed(1) + "\u00b0)",
+          12,
+          h - 6
+        );
       }
       var sReal = document.getElementById("sReal");
       var sImag = document.getElementById("sImag");
