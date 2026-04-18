@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="Beginner guide to vectors in the plane: components, length, addition, scalar multiplication, and the dot product—with interactive diagrams." />
+  <title>Vectors in the plane — a beginner’s guide | CJF Hal AI</title>
+  <meta name="apple-mobile-web-app-title" content="Vectors" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --u: #4ade80;
+      --v: #a78bfa;
+      --sum: #fbbf24;
+      --scalar: #f472b6;
+      --border: rgba(148, 163, 184, 0.14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(ellipse 120% 80% at 50% -25%, #1e3a5f 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 1.25rem 1.15rem 3rem; }
+    .page-brand { margin-bottom: 1.5rem; }
+    .page-brand-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .brand-logo {
+      max-width: min(260px, 78vw);
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 6px 32px rgba(0, 0, 0, 0.45);
+    }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.45rem, 4vw, 1.95rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+      font-size: 1.02rem;
+    }
+    h2 {
+      margin: 2rem 0 0.6rem;
+      font-size: 1.18rem;
+      font-weight: 650;
+      color: #7dd3fc;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.22);
+      padding-bottom: 0.35rem;
+    }
+    h3 { margin: 1.2rem 0 0.45rem; font-size: 1.05rem; color: #cbd5e1; }
+    p { margin: 0.65rem 0; }
+    a { color: var(--accent); }
+    a:hover { color: #7dd3fc; }
+    .card {
+      background: var(--panel);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 1rem 1.15rem 1.2rem;
+      margin: 1rem 0;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+    }
+    .callout {
+      margin: 1rem 0;
+      padding: 0.85rem 1rem;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    ul { margin: 0.5rem 0 0.5rem 1.1rem; padding: 0; }
+    li { margin: 0.35rem 0; }
+    .diagram-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 1rem auto;
+      aspect-ratio: 1;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: #0a1224;
+      border: 1px solid var(--border);
+    }
+    .diagram-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .controls {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+    .slider-row {
+      display: grid;
+      grid-template-columns: auto 1fr minmax(4.5rem, auto);
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+    }
+    .slider-row label { color: var(--muted); min-width: 6.25rem; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .slider-u label { color: rgba(167, 243, 199, 0.92); }
+    .slider-u input { accent-color: var(--u); }
+    .slider-u .val { color: rgba(187, 247, 208, 0.95); }
+    .slider-v label { color: rgba(216, 201, 254, 0.92); }
+    .slider-v input { accent-color: var(--v); }
+    .slider-v .val { color: rgba(221, 214, 254, 0.95); }
+    .slider-sc label { color: rgba(251, 207, 232, 0.95); }
+    .slider-sc input { accent-color: var(--scalar); }
+    .slider-sc .val { color: rgba(252, 231, 243, 0.95); }
+    input[type="range"]:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.45);
+      outline-offset: 2px;
+    }
+    .val { font-variant-numeric: tabular-nums; color: var(--text); text-align: right; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      justify-content: center;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .dot { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+    .katex-display { margin: 0.75rem 0 !important; overflow-x: auto; }
+    .control-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.65rem;
+      margin-top: 0.75rem;
+    }
+    .control-actions button {
+      font: inherit;
+      font-size: 0.82rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.65);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .control-actions button:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+    .control-actions button:focus-visible {
+      outline: 2px solid rgba(56, 189, 248, 0.5);
+      outline-offset: 2px;
+    }
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-brand">
+      <div class="page-brand-inner">
+        <img
+          src="header-logo.svg"
+          alt="Hal AI by CJF"
+          class="brand-logo"
+          width="260"
+          height="88"
+          decoding="async"
+        />
+      </div>
+    </header>
+
+    <h1>Vectors in the plane</h1>
+    <p class="subtitle">A beginner’s guide: components, length, addition, scaling, and the dot product—with live diagrams</p>
+
+    <section class="card">
+      <h2>What is a vector (here)?</h2>
+      <p>
+        In the <strong>plane</strong>, a <strong>vector</strong> is a quantity with two pieces of information: <strong>how far</strong> you move left–right and <strong>how far</strong> you move up–down.
+        We write it as an ordered pair of real numbers, for example <span class="math">\mathbf{v} = (v_x,\, v_y)</span>, or as a column vector:
+      </p>
+      <div class="callout">\displaystyle \mathbf{v} = \begin{pmatrix} v_x \\ v_y \end{pmatrix}</div>
+      <p>
+        You can picture <span class="math">\mathbf{v}</span> as an <strong>arrow</strong> from the origin <span class="math">(0,0)</span> to the point <span class="math">(v_x, v_y)</span>.
+        The same pair can mean a <strong>displacement</strong> (“go <span class="math">v_x</span> in <span class="math">x</span>, then <span class="math">v_y</span> in <span class="math">y</span>”) even if you start somewhere other than the origin—then you draw the same arrow <em>starting</em> at that point.
+      </p>
+      <p>
+        This page sticks to <strong>two dimensions</strong> so everything fits on one screen. The same ideas extend to 3D with a third component <span class="math">v_z</span>.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Length (magnitude)</h2>
+      <p>
+        The <strong>length</strong> (or <strong>magnitude</strong>) of <span class="math">\mathbf{v}</span> is written <span class="math">|\mathbf{v}|</span> or sometimes <span class="math">\|\mathbf{v}\|</span>.
+        By Pythagoras in the right triangle with legs <span class="math">|v_x|</span> and <span class="math">|v_y|</span>, the slanted side has length:
+      </p>
+      <div class="callout">\displaystyle |\mathbf{v}| = \sqrt{v_x^2 + v_y^2}</div>
+      <p>
+        A vector of length <span class="math">1</span> is a <strong>unit vector</strong>. Dividing any nonzero vector by its length makes a unit vector pointing the same way:
+      </p>
+      <div class="callout">\displaystyle \hat{\mathbf{v}} = \frac{\mathbf{v}}{|\mathbf{v}|}</div>
+    </section>
+
+    <section class="card">
+      <h2>Adding vectors</h2>
+      <p>
+        <strong>Algebraically</strong>, add <strong>component by component</strong>:
+      </p>
+      <div class="callout">\displaystyle (u_x,\, u_y) + (v_x,\, v_y) = (u_x + v_x,\; u_y + v_y)</div>
+      <p>
+        <strong>Geometrically</strong>, place the tail of <span class="math">\mathbf{v}</span> at the tip of <span class="math">\mathbf{u}</span>; the arrow from the origin to that tip is <span class="math">\mathbf{u}+\mathbf{v}</span> (<strong>tip-to-tail</strong> rule).
+        Equivalently, build the <strong>parallelogram</strong> with sides <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span> from the origin; the diagonal from the origin is again <span class="math">\mathbf{u}+\mathbf{v}</span>.
+      </p>
+      <p class="diagram-hint">
+        Green = <span class="math">\mathbf{u}</span>, violet = <span class="math">\mathbf{v}</span>, gold = <span class="math">\mathbf{u}+\mathbf{v}</span>. The readout lists components, lengths, and the <strong>dot product</strong> <span class="math">\mathbf{u}\cdot\mathbf{v}</span> (see below).
+      </p>
+      <div class="diagram-wrap">
+        <canvas id="addCanvas" width="520" height="520" aria-label="Vector addition diagram"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-u"><label><span class="math">u_x</span></label><input type="range" id="ux" min="-2.8" max="2.8" step="0.02" value="1.2" /><span class="val" id="uxv">1.20</span></div>
+        <div class="slider-row slider-u"><label><span class="math">u_y</span></label><input type="range" id="uy" min="-2.8" max="2.8" step="0.02" value="0.7" /><span class="val" id="uyv">0.70</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_x</span></label><input type="range" id="vx" min="-2.8" max="2.8" step="0.02" value="-0.5" /><span class="val" id="vxv">-0.50</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_y</span></label><input type="range" id="vy" min="-2.8" max="2.8" step="0.02" value="1.1" /><span class="val" id="vyv">1.10</span></div>
+        <div class="control-actions">
+          <button type="button" id="resetAdd">Reset</button>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--u)"></span><strong>u</strong></span>
+        <span><span class="dot" style="background:var(--v)"></span><strong>v</strong></span>
+        <span><span class="dot" style="background:var(--sum)"></span><strong>u + v</strong> (resultant)</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Multiplying a vector by a <em>number</em> (scalar multiplication)</h2>
+      <p>
+        A <strong>scalar</strong> is an ordinary real number (not bold). Multiplying a vector <span class="math">\mathbf{v}</span> by a scalar <span class="math">c</span> <strong>scales</strong> every component:
+      </p>
+      <div class="callout">\displaystyle c\,(v_x,\, v_y) = (c\,v_x,\; c\,v_y)</div>
+      <p>
+        <strong>Geometry:</strong> if <span class="math">c &gt; 1</span>, the arrow gets longer in the same direction; if <span class="math">0 \lt c \lt 1</span>, it shrinks; if <span class="math">c \lt 0</span>, it flips to the <strong>opposite</strong> direction and scales by <span class="math">|c|</span>.
+        In every case, <span class="math">|c\,\mathbf{v}| = |c|\,|\mathbf{v}|</span>.
+      </p>
+      <p class="diagram-hint">Pink scalar <span class="math">c</span> scales the violet vector <span class="math">\mathbf{v}</span>; gold shows <span class="math">c\mathbf{v}</span>.</p>
+      <div class="diagram-wrap">
+        <canvas id="scalCanvas" width="520" height="520" aria-label="Scalar multiplication diagram"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-v"><label><span class="math">v_x</span></label><input type="range" id="svx" min="-2.5" max="2.5" step="0.02" value="1" /><span class="val" id="svxv">1.00</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_y</span></label><input type="range" id="svy" min="-2.5" max="2.5" step="0.02" value="0.5" /><span class="val" id="svyv">0.50</span></div>
+        <div class="slider-row slider-sc"><label>Scalar <span class="math">c</span></label><input type="range" id="sc" min="-220" max="220" value="120" /><span class="val" id="scv">1.20</span></div>
+        <div class="control-actions">
+          <button type="button" id="resetScal">Reset</button>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--v)"></span><strong>v</strong></span>
+        <span><span class="dot" style="background:var(--sum)"></span><strong>c v</strong> (scaled)</span>
+      </div>
+      <p class="diagram-hint">Scalar slider uses hundredths: <span class="math">c</span> equals the slider value times 0.01.</p>
+    </section>
+
+    <section class="card">
+      <h2>Multiplying two vectors: the dot product</h2>
+      <p>
+        There is no single “product of two vectors” that returns another arrow in the plane without extra structure.
+        The most important product for beginners is the <strong>dot product</strong> (scalar product), which takes <strong>two vectors</strong> and returns <strong>one number</strong>:
+      </p>
+      <div class="callout">\displaystyle \mathbf{u}\cdot\mathbf{v} = u_x v_x + u_y v_y</div>
+      <p>
+        <strong>Geometry:</strong> if <span class="math">\theta</span> is the angle between <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span> when they start at the same point, then
+      </p>
+      <div class="callout">\displaystyle \mathbf{u}\cdot\mathbf{v} = |\mathbf{u}|\,|\mathbf{v}|\,\cos\theta</div>
+      <p>
+        So the dot product measures <strong>how much one vector lies along the other</strong>: it is large and positive when they point nearly the same way, zero when they are perpendicular, and negative when they point more opposite than not.
+      </p>
+      <p>
+        In 2D you may also meet the <strong>2×2 determinant</strong> <span class="math">u_x v_y - u_y v_x</span>, which gives the signed area of the parallelogram spanned by <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span>—related to “cross product” ideas in 3D. The diagrams above already let you see when that parallelogram is wide or nearly flat (parallel vectors).
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Standard basis</h2>
+      <p>
+        The vectors <span class="math">\mathbf{i} = (1,0)</span> and <span class="math">\mathbf{j} = (0,1)</span> point along the axes and have length <span class="math">1</span>.
+        Any vector in the plane can be written <span class="math">\mathbf{v} = v_x\,\mathbf{i} + v_y\,\mathbf{j}</span>—the same numbers as its components.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Related note</h2>
+      <p>
+        Complex numbers <span class="math">a+bi</span> add <strong>exactly like</strong> vectors <span class="math">(a,b)</span> in the plane; multiplication is an extra twist (rotation and scaling). See
+        <a href="index.html">Complex numbers — a visual brief</a>.
+      </p>
+    </section>
+
+    <footer>
+      Educational page — Hal AI by CJF · KaTeX via CDN · Open <code>index.html</code> in a browser or host on GitHub Pages.
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof katex === "undefined") return;
+      document.querySelectorAll(".callout").forEach(function (el) {
+        var t = el.textContent.trim();
+        if (t.indexOf("\\displaystyle") === 0) t = t.replace(/^\\displaystyle\s*/, "");
+        el.innerHTML = "";
+        try {
+          katex.render(t, el, { displayMode: true, throwOnError: false });
+        } catch (e) {
+          el.textContent = t;
+        }
+      });
+      document.querySelectorAll("span.math").forEach(function (el) {
+        var t = el.textContent.trim();
+        if (!t) return;
+        try {
+          katex.render(t, el, { displayMode: false, throwOnError: false });
+        } catch (e) {}
+      });
+    });
+  </script>
+  <script>
+    (function () {
+      var scale = 62;
+      function toXY(x, y, w, h) {
+        var cx = w / 2, cy = h / 2;
+        return { x: cx + x * scale, y: cy - y * scale };
+      }
+      function drawGrid(ctx, w, h) {
+        ctx.fillStyle = "#0a1224";
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = "rgba(148,163,184,0.12)";
+        ctx.lineWidth = 1;
+        var cx = w / 2, cy = h / 2;
+        for (var g = -5; g <= 5; g++) {
+          var o = toXY(g, 0, w, h);
+          ctx.beginPath();
+          ctx.moveTo(o.x, 0);
+          ctx.lineTo(o.x, h);
+          ctx.stroke();
+          o = toXY(0, g, w, h);
+          ctx.beginPath();
+          ctx.moveTo(0, o.y);
+          ctx.lineTo(w, o.y);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = "rgba(148,163,184,0.35)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx, h);
+        ctx.stroke();
+        ctx.fillStyle = "#64748b";
+        ctx.font = "13px Segoe UI, sans-serif";
+        ctx.fillText("x", w - 22, cy - 8);
+        ctx.fillText("y", cx + 8, 18);
+      }
+      function len(x, y) {
+        return Math.sqrt(x * x + y * y);
+      }
+      function drawAdd() {
+        var c = document.getElementById("addCanvas");
+        var ux = parseFloat(document.getElementById("ux").value);
+        var uy = parseFloat(document.getElementById("uy").value);
+        var vx = parseFloat(document.getElementById("vx").value);
+        var vy = parseFloat(document.getElementById("vy").value);
+        document.getElementById("uxv").textContent = ux.toFixed(2);
+        document.getElementById("uyv").textContent = uy.toFixed(2);
+        document.getElementById("vxv").textContent = vx.toFixed(2);
+        document.getElementById("vyv").textContent = vy.toFixed(2);
+        var sx = ux + vx;
+        var sy = uy + vy;
+        var dot = ux * vx + uy * vy;
+        var lu = len(ux, uy);
+        var lv = len(vx, vy);
+        var ls = len(sx, sy);
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var O = { x: w / 2, y: h / 2 };
+        var U = toXY(ux, uy, w, h);
+        var V = toXY(vx, vy, w, h);
+        var S = toXY(sx, sy, w, h);
+        function arrow(x0, y0, x1, y1, color, lw) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = lw || 2.5;
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+        }
+        arrow(O.x, O.y, U.x, U.y, "rgba(74,222,128,0.95)", 3);
+        arrow(O.x, O.y, V.x, V.y, "rgba(167,139,250,0.95)", 3);
+        arrow(U.x, U.y, S.x, S.y, "rgba(167,139,250,0.4)", 2);
+        arrow(V.x, V.y, S.x, S.y, "rgba(74,222,128,0.4)", 2);
+        arrow(O.x, O.y, S.x, S.y, "rgba(251,191,36,0.95)", 3);
+        function dot(x, y, fill, label) {
+          ctx.fillStyle = fill;
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "#0f172a";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          if (label) {
+            ctx.fillStyle = "#e2e8f0";
+            ctx.font = "13px Segoe UI, sans-serif";
+            ctx.fillText(label, x + 10, y - 8);
+          }
+        }
+        dot(U.x, U.y, "#4ade80", "u");
+        dot(V.x, V.y, "#a78bfa", "v");
+        dot(S.x, S.y, "#fbbf24", "u+v");
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("u+v = (" + sx.toFixed(2) + ", " + sy.toFixed(2) + ")", 10, h - 52);
+        ctx.fillText("|u| = " + lu.toFixed(3) + "   |v| = " + lv.toFixed(3) + "   |u+v| = " + ls.toFixed(3), 10, h - 36);
+        ctx.fillText("u·v = " + dot.toFixed(3), 10, h - 20);
+      }
+      ["ux", "uy", "vx", "vy"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawAdd);
+      });
+      drawAdd();
+      document.getElementById("resetAdd").addEventListener("click", function () {
+        document.getElementById("ux").value = "1.2";
+        document.getElementById("uy").value = "0.7";
+        document.getElementById("vx").value = "-0.5";
+        document.getElementById("vy").value = "1.1";
+        drawAdd();
+      });
+
+      function drawScal() {
+        var c = document.getElementById("scalCanvas");
+        var vx = parseFloat(document.getElementById("svx").value);
+        var vy = parseFloat(document.getElementById("svy").value);
+        var coeff = parseFloat(document.getElementById("sc").value) * 0.01;
+        document.getElementById("svxv").textContent = vx.toFixed(2);
+        document.getElementById("svyv").textContent = vy.toFixed(2);
+        document.getElementById("scv").textContent = coeff.toFixed(2);
+        var wx = coeff * vx;
+        var wy = coeff * vy;
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var O = { x: w / 2, y: h / 2 };
+        var V = toXY(vx, vy, w, h);
+        var W = toXY(wx, wy, w, h);
+        ctx.strokeStyle = "rgba(167,139,250,0.9)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(V.x, V.y);
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(251,191,36,0.95)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(W.x, W.y);
+        ctx.stroke();
+        function dot(x, y, fill, label) {
+          ctx.fillStyle = fill;
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "#0f172a";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "13px Segoe UI, sans-serif";
+          ctx.fillText(label, x + 8, y - 8);
+        }
+        dot(V.x, V.y, "#a78bfa", "v");
+        dot(W.x, W.y, "#fbbf24", "cv");
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("cv = (" + wx.toFixed(2) + ", " + wy.toFixed(2) + ")   |cv| = " + len(wx, wy).toFixed(3), 10, h - 14);
+      }
+      ["svx", "svy", "sc"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawScal);
+      });
+      drawScal();
+      document.getElementById("resetScal").addEventListener("click", function () {
+        document.getElementById("svx").value = "1";
+        document.getElementById("svy").value = "0.5";
+        document.getElementById("sc").value = "120";
+        drawScal();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 # Maths — Complex numbers (HTML)
 
-This folder contains a **single static web page**, `index.html`, that explains **complex numbers** in plain language: the imaginary unit **i**, the Argand plane, modulus **r** and argument **θ**, addition and multiplication, **Euler’s formula**, why complex numbers matter in science and engineering, and a short historical note.
+This folder contains **`index.html`**, which explains **complex numbers** in plain language: the imaginary unit **i**, the Argand plane, modulus **r** and argument **θ**, addition and multiplication, **Euler’s formula**, why complex numbers matter in science and engineering, and a short historical note.
 
-The page is presented as a **Hal AI by CJF** branded educational note with interactive canvas diagrams and the standard header logo used across the Maths collection.
+The main page is a **Hal AI by CJF** branded educational note with interactive canvas diagrams and the standard header logo. Companion page **`Vectors.html`** (same folder) is a beginner’s guide to vectors in the plane, linked from the addition section.
 
 ## What the page covers
 
@@ -18,7 +18,7 @@ The page is presented as a **Hal AI by CJF** branded educational note with inter
 ## Interactive features
 
 - **Argand diagram** — drag the point or use sliders; shows **r**, **θ**, and the real/imaginary legs
-- **Addition diagram** — two numbers and their sum with adjustable components (same geometry as **vector addition**; see the linked **[Vectors in the plane](../Vectors/index.html)** guide)
+- **Addition diagram** — two numbers and their sum with adjustable components (same geometry as **vector addition**; see **[Vectors in the plane](Vectors.html)** in this folder)
 - **Multiplication diagram** — polar-style controls with **θ₁**, **θ₂**, **θ₁+θ₂** arcs from the axis; a softer arc for **arg(z₂)** and a brighter dashed **+θ₂** arc between the **z₁** and **z₁z₂** rays; sliders for **z₁** and **z₂** use **green** and **violet** accents to match the diagram
 - **Reset** — each diagram section has a **Reset** button that restores that section’s default slider values (see below)
 - **Snap → π/2 grid** (multiplication only) — snaps **θ₁** or **θ₂** to the nearest of **0**, **±π/2**, **±π** on the slider scale (nearest principal axis in this range)
@@ -33,7 +33,7 @@ The page is presented as a **Hal AI by CJF** branded educational note with inter
 
 ## How to view
 
-Open `index.html` in any modern web browser, or publish the folder on **GitHub Pages** and open the site URL.
+Open `index.html` in any modern web browser, or publish the folder on **GitHub Pages** and open the site URL. Open **`Vectors.html`** directly for the vector guide (same assets and branding as this folder).
 
 **iPhone / iPad:** In Safari, tap **Share → Add to Home Screen**. The file `apple-touch-icon.png` is included as a **180 × 180** home-screen icon; the mobile web app title is set to **Complex numbers**.
 
@@ -44,6 +44,7 @@ Open `index.html` in any modern web browser, or publish the folder on **GitHub P
 | File | Purpose |
 |------|---------|
 | `index.html` | Main educational page about complex numbers |
+| `Vectors.html` | Beginner’s guide to vectors in the plane (addition, scaling, dot product); links back here |
 | `README.md` | Project summary and usage notes |
 | `header-logo.svg` | Official Hal AI by CJF header logo used on the page |
 | `favicon.svg` | Browser tab icon (shared style with other Maths pages) |
