@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b1020" />
-  <meta name="description" content="Beginner guide to vectors in the plane: components, length, addition, scalar multiplication, and the dot product—with interactive diagrams." />
-  <title>Vectors in the plane — a beginner’s guide | CJF Hal AI</title>
+  <meta name="description" content="Foundations of vectors from scalars to the dot product: arrows, tip-to-tail addition, components, unit vectors, a brief 3D glimpse, and interactive diagrams." />
+  <title>Vectors — from foundations to the dot product | CJF Hal AI</title>
   <meta name="apple-mobile-web-app-title" content="Vectors" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
@@ -22,6 +22,9 @@
       --v: #a78bfa;
       --sum: #fbbf24;
       --scalar: #f472b6;
+      --compx: #4ade80;
+      --compy: #a78bfa;
+      --mainv: #38bdf8;
       --border: rgba(148, 163, 184, 0.14);
     }
     * { box-sizing: border-box; }
@@ -35,12 +38,7 @@
     }
     .wrap { max-width: 900px; margin: 0 auto; padding: 1.25rem 1.15rem 3rem; }
     .page-brand { margin-bottom: 1.5rem; }
-    .page-brand-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+    .page-brand-inner { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
     .brand-logo {
       max-width: min(260px, 78vw);
       width: 100%;
@@ -56,21 +54,33 @@
       letter-spacing: -0.02em;
       text-align: center;
     }
-    .subtitle {
-      text-align: center;
+    .subtitle { text-align: center; color: var(--muted); margin: 0 0 1.25rem; font-size: 1.02rem; }
+    .build-path {
+      font-size: 0.88rem;
       color: var(--muted);
-      margin: 0 0 1.5rem;
-      font-size: 1.02rem;
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin: 0 0 1.25rem;
+      line-height: 1.55;
     }
     h2 {
-      margin: 2rem 0 0.6rem;
+      margin: 2rem 0 0.55rem;
       font-size: 1.18rem;
       font-weight: 650;
       color: #7dd3fc;
       border-bottom: 1px solid rgba(56, 189, 248, 0.22);
       padding-bottom: 0.35rem;
     }
-    h3 { margin: 1.2rem 0 0.45rem; font-size: 1.05rem; color: #cbd5e1; }
+    h3 { margin: 1.15rem 0 0.45rem; font-size: 1.05rem; color: #cbd5e1; }
+    h3.h3-sub {
+      margin: 1.35rem 0 0.35rem;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #94a3b8;
+      border-bottom: none;
+    }
     p { margin: 0.65rem 0; }
     a { color: var(--accent); }
     a:hover { color: #7dd3fc; }
@@ -90,8 +100,25 @@
       border-radius: 12px;
       font-size: 0.95rem;
     }
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.65rem;
+      margin: 0.75rem 0;
+    }
+    .example-tile {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.88rem;
+    }
+    .example-tile strong { color: #a5f3fc; display: block; margin-bottom: 0.25rem; }
     ul { margin: 0.5rem 0 0.5rem 1.1rem; padding: 0; }
     li { margin: 0.35rem 0; }
+    .checklist-intro { font-size: 0.92rem; color: var(--muted); margin: 0 0 0.65rem; }
+    ul.checklist { margin-left: 0; padding-left: 1.15rem; list-style-type: disc; }
+    ul.checklist li { margin: 0.5rem 0; padding-left: 0.15rem; }
     .diagram-wrap {
       position: relative;
       width: 100%;
@@ -107,17 +134,14 @@
       background: #0a1224;
       border: 1px solid var(--border);
     }
+    #introVecCanvas { cursor: crosshair; touch-action: none; }
     .diagram-hint {
       font-size: 0.8rem;
       color: var(--muted);
       text-align: center;
       margin-top: 0.5rem;
     }
-    .controls {
-      display: grid;
-      gap: 0.85rem;
-      margin-top: 1rem;
-    }
+    .controls { display: grid; gap: 0.85rem; margin-top: 1rem; }
     .slider-row {
       display: grid;
       grid-template-columns: auto 1fr minmax(4.5rem, auto);
@@ -125,7 +149,7 @@
       gap: 0.65rem;
       font-size: 0.9rem;
     }
-    .slider-row label { color: var(--muted); min-width: 6.25rem; }
+    .slider-row label { color: var(--muted); min-width: 6.5rem; }
     input[type="range"] { width: 100%; accent-color: var(--accent); }
     .slider-u label { color: rgba(167, 243, 199, 0.92); }
     .slider-u input { accent-color: var(--u); }
@@ -136,6 +160,9 @@
     .slider-sc label { color: rgba(251, 207, 232, 0.95); }
     .slider-sc input { accent-color: var(--scalar); }
     .slider-sc .val { color: rgba(252, 231, 243, 0.95); }
+    .slider-main label { color: rgba(125, 211, 252, 0.92); }
+    .slider-main input { accent-color: var(--mainv); }
+    .slider-main .val { color: rgba(186, 230, 253, 0.95); }
     input[type="range"]:focus-visible {
       outline: 2px solid rgba(56, 189, 248, 0.45);
       outline-offset: 2px;
@@ -144,12 +171,12 @@
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem 1.25rem;
+      gap: 0.65rem 1.1rem;
       justify-content: center;
       margin-top: 0.75rem;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
     }
-    .dot { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+    .dot { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; margin-right: 0.3rem; vertical-align: middle; }
     .katex-display { margin: 0.75rem 0 !important; overflow-x: auto; }
     .control-actions {
       display: flex;
@@ -190,147 +217,263 @@
   <div class="wrap">
     <header class="page-brand">
       <div class="page-brand-inner">
-        <img
-          src="header-logo.svg"
-          alt="Hal AI by CJF"
-          class="brand-logo"
-          width="260"
-          height="88"
-          decoding="async"
-        />
+        <img src="header-logo.svg" alt="Hal AI by CJF" class="brand-logo" width="260" height="88" decoding="async" />
       </div>
     </header>
 
     <h1>Vectors in the plane</h1>
-    <p class="subtitle">A beginner’s guide: components, length, addition, scaling, and the dot product—with live diagrams</p>
+    <p class="subtitle">A step-by-step path from scalars to the dot product, with arrows you can move and sliders to explore</p>
+    <p class="build-path">
+      <strong>How this page builds ideas:</strong>
+      scalars → vectors as arrows → real-world examples → tip-to-tail addition → components along axes → unit vectors → adding with numbers → scaling a vector → dot product (geometry + algebra) → brief 3D picture → checklist → where next.
+    </p>
 
     <section class="card">
-      <h2>What is a vector (here)?</h2>
+      <h2>1. Scalars — “how much” only</h2>
       <p>
-        In the <strong>plane</strong>, a <strong>vector</strong> is a quantity with two pieces of information: <strong>how far</strong> you move left–right and <strong>how far</strong> you move up–down.
-        We write it as an ordered pair of real numbers, for example <span class="math">\mathbf{v} = (v_x,\, v_y)</span>, or as a column vector:
+        A <strong>scalar</strong> is an ordinary real number. It has a <strong>magnitude</strong> (its value, with a sign if you allow negatives) but <strong>no built-in direction</strong> in space.
+        You can add and multiply scalars exactly as you learned in arithmetic.
       </p>
-      <div class="callout">\displaystyle \mathbf{v} = \begin{pmatrix} v_x \\ v_y \end{pmatrix}</div>
+      <div class="example-grid">
+        <div class="example-tile"><strong>Temperature</strong> e.g. 21&nbsp;°C — a single value at a place; no arrow.</div>
+        <div class="example-tile"><strong>Mass</strong> e.g. 2.4&nbsp;kg — amount of matter; direction does not apply.</div>
+        <div class="example-tile"><strong>Volume</strong> e.g. 500&nbsp;ml — how much space a liquid fills.</div>
+        <div class="example-tile"><strong>Time interval</strong> e.g. 3.5&nbsp;s — duration; not an arrow in the plane.</div>
+        <div class="example-tile"><strong>Energy</strong> e.g. 50&nbsp;J — a scalar in many introductory models (work will connect to vectors later).</div>
+      </div>
       <p>
-        You can picture <span class="math">\mathbf{v}</span> as an <strong>arrow</strong> from the origin <span class="math">(0,0)</span> to the point <span class="math">(v_x, v_y)</span>.
-        The same pair can mean a <strong>displacement</strong> (“go <span class="math">v_x</span> in <span class="math">x</span>, then <span class="math">v_y</span> in <span class="math">y</span>”) even if you start somewhere other than the origin—then you draw the same arrow <em>starting</em> at that point.
-      </p>
-      <p>
-        This page sticks to <strong>two dimensions</strong> so everything fits on one screen. The same ideas extend to 3D with a third component <span class="math">v_z</span>.
+        <strong>Contrast:</strong> “How fast” can be meant in two ways. <strong>Speed</strong> (e.g. 60&nbsp;mph) is a scalar — magnitude of motion only.
+        <strong>Velocity</strong> includes <em>which way</em> you move, so it is a <strong>vector</strong>. Similarly, <strong>distance</strong> walked along a winding path is a scalar; <strong>displacement</strong> (“net change of position”) is a vector from start to finish.
       </p>
     </section>
 
     <section class="card">
-      <h2>Length (magnitude)</h2>
+      <h2>2. Vectors — magnitude <em>and</em> direction</h2>
       <p>
-        The <strong>length</strong> (or <strong>magnitude</strong>) of <span class="math">\mathbf{v}</span> is written <span class="math">|\mathbf{v}|</span> or sometimes <span class="math">\|\mathbf{v}\|</span>.
-        By Pythagoras in the right triangle with legs <span class="math">|v_x|</span> and <span class="math">|v_y|</span>, the slanted side has length:
+        A <strong>vector</strong> in the plane combines two ideas: <strong>how long</strong> an arrow is, and <strong>which way</strong> it points.
+        We draw it as an <strong>arrow</strong>: length = magnitude, arrowhead = direction. The same vector can be drawn anywhere (we often start at the origin for clarity), because what matters is length and direction, not where the drawing starts—unless we mean a <strong>position</strong> from a fixed point.
       </p>
-      <div class="callout">\displaystyle |\mathbf{v}| = \sqrt{v_x^2 + v_y^2}</div>
-      <p>
-        A vector of length <span class="math">1</span> is a <strong>unit vector</strong>. Dividing any nonzero vector by its length makes a unit vector pointing the same way:
+      <h3>Examples in science and engineering</h3>
+      <ul>
+        <li><strong>Velocity</strong> — how fast and which way (e.g. 12&nbsp;m/s north-east).</li>
+        <li><strong>Acceleration</strong> — how velocity is changing; has magnitude and direction (e.g. centripetal acceleration points toward the centre of circular motion).</li>
+        <li><strong>Force</strong> — a push or pull with magnitude and line of action; Newton’s <span class="math">\mathbf{F}=m\mathbf{a}</span> links force and acceleration as vectors.</li>
+        <li><strong>Displacement</strong> — straight-line change of position from A to B.</li>
+        <li><strong>Momentum</strong> — <span class="math">\mathbf{p}=m\mathbf{v}</span> (mass times velocity); same direction as velocity for positive mass.</li>
+        <li><strong>Electric field</strong> — a vector telling the force per unit positive charge would act at a point.</li>
+      </ul>
+      <p class="diagram-hint">
+        Drag the tip of the cyan arrow, or use sliders. Length <span class="math">|\mathbf{v}|</span> is shown; the arc shows angle from the positive <span class="math">x</span>-axis.
       </p>
-      <div class="callout">\displaystyle \hat{\mathbf{v}} = \frac{\mathbf{v}}{|\mathbf{v}|}</div>
+      <div class="diagram-wrap">
+        <canvas id="introVecCanvas" width="520" height="520" aria-label="Single vector: drag tip or use sliders"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-main"><label><span class="math">v_x</span></label><input type="range" id="ivx" min="-2.6" max="2.6" step="0.02" value="1.4" /><span class="val" id="ivxv">1.40</span></div>
+        <div class="slider-row slider-main"><label><span class="math">v_y</span></label><input type="range" id="ivy" min="-2.6" max="2.6" step="0.02" value="1" /><span class="val" id="ivyv">1.00</span></div>
+        <div class="control-actions"><button type="button" id="resetIntro">Reset</button></div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>Adding vectors</h2>
+      <h2>3. Adding vectors — tip to tail</h2>
       <p>
-        <strong>Algebraically</strong>, add <strong>component by component</strong>:
+        To add <span class="math">\mathbf{u}+\mathbf{v}</span>, draw <span class="math">\mathbf{u}</span> from your chosen start, then draw <span class="math">\mathbf{v}</span> <strong>starting where</strong> <span class="math">\mathbf{u}</span> <strong>ends</strong> (same length and direction as <span class="math">\mathbf{v}</span>—we “move” the arrow). The sum is the arrow from the <strong>start of</strong> <span class="math">\mathbf{u}</span> to the <strong>end of the moved</strong> <span class="math">\mathbf{v}</span>.
+        That new arrow has the correct <strong>combined length and direction</strong> for the sum (e.g. two velocities combined as in relative motion).
+      </p>
+      <p>
+        The <strong>parallelogram rule</strong> is the same sum drawn another way: from the same start, draw <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span>; complete the parallelogram; the diagonal from the start is <span class="math">\mathbf{u}+\mathbf{v}</span>.
+      </p>
+      <p class="diagram-hint">
+        Green = <span class="math">\mathbf{u}</span>; violet along dashed = same <span class="math">\mathbf{v}</span> from the origin; solid violet = <span class="math">\mathbf{v}</span> placed tip-to-tail after <span class="math">\mathbf{u}</span>; gold = <span class="math">\mathbf{u}+\mathbf{v}</span>. Faint lines complete the parallelogram.
+      </p>
+      <div class="diagram-wrap">
+        <canvas id="tipTailCanvas" width="520" height="520" aria-label="Tip-to-tail vector addition"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-u"><label><span class="math">u_x</span></label><input type="range" id="ttux" min="-2.5" max="2.5" step="0.02" value="1.1" /><span class="val" id="ttuxv">1.10</span></div>
+        <div class="slider-row slider-u"><label><span class="math">u_y</span></label><input type="range" id="ttuy" min="-2.5" max="2.5" step="0.02" value="0.5" /><span class="val" id="ttuyv">0.50</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_x</span></label><input type="range" id="ttvx" min="-2.5" max="2.5" step="0.02" value="-0.4" /><span class="val" id="ttvxv">-0.40</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_y</span></label><input type="range" id="ttvy" min="-2.5" max="2.5" step="0.02" value="1" /><span class="val" id="ttvyv">1.00</span></div>
+        <div class="control-actions"><button type="button" id="resetTip">Reset</button></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Component vectors along the axes</h2>
+      <p>
+        Any plane vector <span class="math">\mathbf{v}</span> splits cleanly into a <strong>horizontal part</strong> and a <strong>vertical part</strong>: go <span class="math">v_x</span> along <span class="math">x</span>, then <span class="math">v_y</span> along <span class="math">y</span>, and you arrive at the tip.
+        Those two pieces are themselves vectors lying on the axes; they add (tip-to-tail along the rectangle) to give <span class="math">\mathbf{v}</span>.
+      </p>
+      <div class="callout">\displaystyle \mathbf{v} = (v_x,\, v_y) = v_x(1,0) + v_y(0,1)</div>
+      <p class="diagram-hint">Green = horizontal component; violet = vertical component; cyan = full <span class="math">\mathbf{v}</span>.</p>
+      <div class="diagram-wrap">
+        <canvas id="compCanvas" width="520" height="520" aria-label="Vector resolved into x and y components"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-main"><label><span class="math">v_x</span></label><input type="range" id="cvx" min="-2.6" max="2.6" step="0.02" value="1.6" /><span class="val" id="cvxv">1.60</span></div>
+        <div class="slider-row slider-main"><label><span class="math">v_y</span></label><input type="range" id="cvy" min="-2.6" max="2.6" step="0.02" value="1" /><span class="val" id="cvyv">1.00</span></div>
+        <div class="control-actions"><button type="button" id="resetComp">Reset</button></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Unit vectors and “which way only”</h2>
+      <p>
+        A <strong>unit vector</strong> has length <span class="math">1</span>. It encodes <strong>direction only</strong>. The standard axis unit vectors in the plane are
+        <span class="math">\hat{\mathbf{\imath}} = (1,0)</span> and <span class="math">\hat{\mathbf{\jmath}} = (0,1)</span> (often written <span class="math">\mathbf{i},\,\mathbf{j}</span> when context is clear).
+      </p>
+      <p>
+        Any nonzero vector can be written as “length × direction”:
+        <span class="math">\mathbf{v} = |\mathbf{v}|\,\hat{\mathbf{v}}</span>, where <span class="math">\hat{\mathbf{v}} = \mathbf{v}/|\mathbf{v}|</span> points the same way as <span class="math">\mathbf{v}</span> but has unit length.
+        That is why unit vectors appear everywhere: they separate <em>how big</em> from <em>which way</em>.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>6. Adding vectors using components</h2>
+      <p>
+        If you know the components, you <strong>do not</strong> need to draw tip-to-tail to compute the sum: add each axis separately.
       </p>
       <div class="callout">\displaystyle (u_x,\, u_y) + (v_x,\, v_y) = (u_x + v_x,\; u_y + v_y)</div>
       <p>
-        <strong>Geometrically</strong>, place the tail of <span class="math">\mathbf{v}</span> at the tip of <span class="math">\mathbf{u}</span>; the arrow from the origin to that tip is <span class="math">\mathbf{u}+\mathbf{v}</span> (<strong>tip-to-tail</strong> rule).
-        Equivalently, build the <strong>parallelogram</strong> with sides <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span> from the origin; the diagonal from the origin is again <span class="math">\mathbf{u}+\mathbf{v}</span>.
-      </p>
-      <p class="diagram-hint">
-        Green = <span class="math">\mathbf{u}</span>, violet = <span class="math">\mathbf{v}</span>, gold = <span class="math">\mathbf{u}+\mathbf{v}</span>. The readout lists components, lengths, and the <strong>dot product</strong> <span class="math">\mathbf{u}\cdot\mathbf{v}</span> (see below).
+        The diagram below is the same parallelogram picture as in the complex-numbers note: green <span class="math">\mathbf{u}</span>, violet <span class="math">\mathbf{v}</span>, gold <span class="math">\mathbf{u}+\mathbf{v}</span>. The readout also shows lengths and the dot product (next section).
       </p>
       <div class="diagram-wrap">
-        <canvas id="addCanvas" width="520" height="520" aria-label="Vector addition diagram"></canvas>
+        <canvas id="addCanvas" width="520" height="520" aria-label="Addition with components"></canvas>
       </div>
       <div class="controls">
         <div class="slider-row slider-u"><label><span class="math">u_x</span></label><input type="range" id="ux" min="-2.8" max="2.8" step="0.02" value="1.2" /><span class="val" id="uxv">1.20</span></div>
         <div class="slider-row slider-u"><label><span class="math">u_y</span></label><input type="range" id="uy" min="-2.8" max="2.8" step="0.02" value="0.7" /><span class="val" id="uyv">0.70</span></div>
         <div class="slider-row slider-v"><label><span class="math">v_x</span></label><input type="range" id="vx" min="-2.8" max="2.8" step="0.02" value="-0.5" /><span class="val" id="vxv">-0.50</span></div>
         <div class="slider-row slider-v"><label><span class="math">v_y</span></label><input type="range" id="vy" min="-2.8" max="2.8" step="0.02" value="1.1" /><span class="val" id="vyv">1.10</span></div>
-        <div class="control-actions">
-          <button type="button" id="resetAdd">Reset</button>
-        </div>
+        <div class="control-actions"><button type="button" id="resetAdd">Reset</button></div>
       </div>
       <div class="legend">
         <span><span class="dot" style="background:var(--u)"></span><strong>u</strong></span>
         <span><span class="dot" style="background:var(--v)"></span><strong>v</strong></span>
-        <span><span class="dot" style="background:var(--sum)"></span><strong>u + v</strong> (resultant)</span>
+        <span><span class="dot" style="background:var(--sum)"></span><strong>u + v</strong></span>
       </div>
     </section>
 
     <section class="card">
-      <h2>Multiplying a vector by a <em>number</em> (scalar multiplication)</h2>
+      <h2>7. Multiplying a vector by a scalar</h2>
       <p>
-        A <strong>scalar</strong> is an ordinary real number (not bold). Multiplying a vector <span class="math">\mathbf{v}</span> by a scalar <span class="math">c</span> <strong>scales</strong> every component:
+        Multiplying a vector by a number <span class="math">c</span> scales each component. Length scales by <span class="math">|c|</span>; if <span class="math">c</span> is negative, the arrow flips to the opposite direction.
       </p>
-      <div class="callout">\displaystyle c\,(v_x,\, v_y) = (c\,v_x,\; c\,v_y)</div>
-      <p>
-        <strong>Geometry:</strong> if <span class="math">c &gt; 1</span>, the arrow gets longer in the same direction; if <span class="math">0 \lt c \lt 1</span>, it shrinks; if <span class="math">c \lt 0</span>, it flips to the <strong>opposite</strong> direction and scales by <span class="math">|c|</span>.
-        In every case, <span class="math">|c\,\mathbf{v}| = |c|\,|\mathbf{v}|</span>.
-      </p>
-      <p class="diagram-hint">Pink scalar <span class="math">c</span> scales the violet vector <span class="math">\mathbf{v}</span>; gold shows <span class="math">c\mathbf{v}</span>.</p>
+      <div class="callout">\displaystyle c\,(v_x,\, v_y) = (c\,v_x,\; c\,v_y),\qquad |c\,\mathbf{v}| = |c|\,|\mathbf{v}|</div>
+      <p class="diagram-hint">Violet = <span class="math">\mathbf{v}</span>; gold = <span class="math">c\mathbf{v}</span>. Scalar = slider × 0.01.</p>
       <div class="diagram-wrap">
-        <canvas id="scalCanvas" width="520" height="520" aria-label="Scalar multiplication diagram"></canvas>
+        <canvas id="scalCanvas" width="520" height="520" aria-label="Scalar times vector"></canvas>
       </div>
       <div class="controls">
         <div class="slider-row slider-v"><label><span class="math">v_x</span></label><input type="range" id="svx" min="-2.5" max="2.5" step="0.02" value="1" /><span class="val" id="svxv">1.00</span></div>
         <div class="slider-row slider-v"><label><span class="math">v_y</span></label><input type="range" id="svy" min="-2.5" max="2.5" step="0.02" value="0.5" /><span class="val" id="svyv">0.50</span></div>
-        <div class="slider-row slider-sc"><label>Scalar <span class="math">c</span></label><input type="range" id="sc" min="-220" max="220" value="120" /><span class="val" id="scv">1.20</span></div>
-        <div class="control-actions">
-          <button type="button" id="resetScal">Reset</button>
-        </div>
+        <div class="slider-row slider-sc"><label>Scalar <span class="math">c</span></label><input type="range" id="sc" min="-220" max="220" step="1" value="120" /><span class="val" id="scv">1.20</span></div>
+        <div class="control-actions"><button type="button" id="resetScal">Reset</button></div>
       </div>
-      <div class="legend">
-        <span><span class="dot" style="background:var(--v)"></span><strong>v</strong></span>
-        <span><span class="dot" style="background:var(--sum)"></span><strong>c v</strong> (scaled)</span>
-      </div>
-      <p class="diagram-hint">Scalar slider uses hundredths: <span class="math">c</span> equals the slider value times 0.01.</p>
     </section>
 
     <section class="card">
-      <h2>Multiplying two vectors: the dot product</h2>
+      <h2>8. Multiplying two vectors — the dot product</h2>
       <p>
-        There is no single “product of two vectors” that returns another arrow in the plane without extra structure.
-        The most important product for beginners is the <strong>dot product</strong> (scalar product), which takes <strong>two vectors</strong> and returns <strong>one number</strong>:
+        There is no universal “vector × vector = another arrow in the plane” without extra structure. The product you meet first is the <strong>dot product</strong> (scalar product): two vectors in, <strong>one number</strong> out.
       </p>
+      <h3>Algebra (components)</h3>
       <div class="callout">\displaystyle \mathbf{u}\cdot\mathbf{v} = u_x v_x + u_y v_y</div>
+      <h3>Geometry (lengths and angle)</h3>
       <p>
-        <strong>Geometry:</strong> if <span class="math">\theta</span> is the angle between <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span> when they start at the same point, then
+        Place <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span> tail to tail at the origin, and let <span class="math">\theta</span> be the angle between them. Then
       </p>
       <div class="callout">\displaystyle \mathbf{u}\cdot\mathbf{v} = |\mathbf{u}|\,|\mathbf{v}|\,\cos\theta</div>
       <p>
-        So the dot product measures <strong>how much one vector lies along the other</strong>: it is large and positive when they point nearly the same way, zero when they are perpendicular, and negative when they point more opposite than not.
+        So the dot product tells you <strong>how aligned</strong> the vectors are: large and positive when they point nearly the same way, <strong>zero when perpendicular</strong> (<span class="math">\cos 90^\circ = 0</span>), negative when they tend to oppose each other.
+        The <strong>scalar projection</strong> of <span class="math">\mathbf{v}</span> onto the line of <span class="math">\mathbf{u}</span> is <span class="math">(\mathbf{u}\cdot\mathbf{v})/|\mathbf{u}|</span> (signed length along <span class="math">\mathbf{u}</span>’s direction). The <strong>vector projection</strong> of <span class="math">\mathbf{v}</span> onto <span class="math">\mathbf{u}</span> is that scalar times the unit vector <span class="math">\hat{\mathbf{u}}</span>.
       </p>
       <p>
-        In 2D you may also meet the <strong>2×2 determinant</strong> <span class="math">u_x v_y - u_y v_x</span>, which gives the signed area of the parallelogram spanned by <span class="math">\mathbf{u}</span> and <span class="math">\mathbf{v}</span>—related to “cross product” ideas in 3D. The diagrams above already let you see when that parallelogram is wide or nearly flat (parallel vectors).
+        <strong>Work (motivating example):</strong> constant force <span class="math">\mathbf{F}</span> acting through displacement <span class="math">\mathbf{d}</span> gives work <span class="math">W = \mathbf{F}\cdot\mathbf{d}</span> — only the part of the force <em>along</em> the motion contributes.
       </p>
+      <p class="diagram-hint">
+        Gold segment on green <span class="math">\mathbf{u}</span> = projection of violet <span class="math">\mathbf{v}</span> onto <span class="math">\mathbf{u}</span>; dashed line shows the right angle. Readout: <span class="math">\mathbf{u}\cdot\mathbf{v}</span>, <span class="math">\cos\theta</span>, projection length.
+      </p>
+      <div class="diagram-wrap">
+        <canvas id="dotCanvas" width="520" height="520" aria-label="Dot product and projection"></canvas>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-u"><label><span class="math">u_x</span></label><input type="range" id="dux" min="-2.5" max="2.5" step="0.02" value="1.5" /><span class="val" id="duxv">1.50</span></div>
+        <div class="slider-row slider-u"><label><span class="math">u_y</span></label><input type="range" id="duy" min="-2.5" max="2.5" step="0.02" value="0.3" /><span class="val" id="duyv">0.30</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_x</span></label><input type="range" id="dvx" min="-2.5" max="2.5" step="0.02" value="0.6" /><span class="val" id="dvxv">0.60</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_y</span></label><input type="range" id="dvy" min="-2.5" max="2.5" step="0.02" value="1.2" /><span class="val" id="dvyv">1.20</span></div>
+        <div class="control-actions"><button type="button" id="resetDot">Reset</button></div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>Standard basis</h2>
+      <h2>9. Three dimensions — a short glimpse</h2>
       <p>
-        The vectors <span class="math">\mathbf{i} = (1,0)</span> and <span class="math">\mathbf{j} = (0,1)</span> point along the axes and have length <span class="math">1</span>.
-        Any vector in the plane can be written <span class="math">\mathbf{v} = v_x\,\mathbf{i} + v_y\,\mathbf{j}</span>—the same numbers as its components.
+        Everything on this page lives in the <strong>plane</strong> (<span class="math">x</span> and <span class="math">y</span> only). In space, vectors are written with a <strong>third component</strong> along the <span class="math">z</span> axis (often drawn “out of the page” or upward in diagrams, depending on convention). Magnitude and direction still make sense: length in space is
+        <span class="math">|\mathbf{v}| = \sqrt{v_x^2 + v_y^2 + v_z^2}</span>, and addition is still component-wise,
+        <span class="math">(u_x,u_y,u_z)+(v_x,v_y,v_z)=(u_x+v_x,\,u_y+v_y,\,u_z+v_z)</span>.
       </p>
+      <p>
+        The <strong>dot product</strong> picks up one more term:
+        <span class="math">\mathbf{u}\cdot\mathbf{v} = u_x v_x + u_y v_y + u_z v_z</span>, with the same geometric meaning involving the angle between the two arrows in space.
+        The diagram below is only an <strong>illustration</strong>: a flat screen cannot show true depth, so we use an <strong>isometric-style</strong> projection (a 2D picture of 3D). The rest of this page stays in 2D so the ideas stay visually simple.
+      </p>
+      <p class="diagram-hint">
+        Green = <span class="math">x</span>, cyan = <span class="math">y</span> (up in space), violet = <span class="math">z</span>; faint grid lies in the <span class="math">x</span>–<span class="math">z</span> plane at <span class="math">y=0</span>. Gold = your sample vector <span class="math">(v_x,v_y,v_z)</span>. The <span class="math">y</span> axis is drawn <strong>first</strong>, so the grid sits visually on top of it at the “floor”—a clearer sense that <span class="math">x</span> and <span class="math">z</span> lie in the horizontal plane while <span class="math">y</span> stands out of that plane.
+      </p>
+      <h3 class="h3-sub">Fixed snapshot (same projection)</h3>
+      <div class="diagram-wrap">
+        <canvas id="glimpse3dCanvas" width="520" height="520" aria-label="Isometric-style illustration of 3D axes and one vector"></canvas>
+      </div>
+      <h3 class="h3-sub">Rotating hollow box + grids</h3>
+      <p class="diagram-hint" style="margin-top: 0.25rem">
+        The same isometric mapping and the same <span class="math">(v_x,v_y,v_z)</span> as above, but the whole scene—wireframe cube with graph-paper grids on its faces, axes, and your vector—spins slowly so depth swaps in a more <strong>dynamic</strong> way. Lines are depth-sorted (painter’s order) for a cleaner hollow look. Pause if you prefer a still frame.
+      </p>
+      <div class="diagram-wrap">
+        <canvas id="glimpse3dAnimCanvas" width="520" height="520" aria-label="Rotating 3D wireframe box with grids and vector"></canvas>
+      </div>
+      <div class="control-actions" style="justify-content: center; margin-top: 0.35rem">
+        <button type="button" id="toggleSpin3d" aria-pressed="false">Pause rotation</button>
+      </div>
+      <div class="controls">
+        <div class="slider-row slider-u"><label><span class="math">v_x</span></label><input type="range" id="g3x" min="-2.2" max="2.2" step="0.04" value="1" /><span class="val" id="g3xv">1.00</span></div>
+        <div class="slider-row slider-main"><label><span class="math">v_y</span></label><input type="range" id="g3y" min="-2.2" max="2.2" step="0.04" value="0.7" /><span class="val" id="g3yv">0.70</span></div>
+        <div class="slider-row slider-v"><label><span class="math">v_z</span></label><input type="range" id="g3z" min="-2.2" max="2.2" step="0.04" value="0.5" /><span class="val" id="g3zv">0.50</span></div>
+        <div class="control-actions"><button type="button" id="resetG3">Reset</button></div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>Related note</h2>
-      <p>
-        Complex numbers <span class="math">a+bi</span> add <strong>exactly like</strong> vectors <span class="math">(a,b)</span> in the plane; multiplication is an extra twist (rotation and scaling). See
-        <a href="index.html">Complex numbers — a visual brief</a>.
+      <h2>10. Before you leave — can you…?</h2>
+      <p class="checklist-intro">
+        A short checklist against what this page covered (2D, plus the 3D glimpse). If you can do these in your own words, you have solid foundations.
       </p>
+      <ul class="checklist">
+        <li><strong>Scalars vs vectors:</strong> explain the difference and give one example of each from science or everyday language.</li>
+        <li><strong>Arrows:</strong> say what arrow <em>length</em> and <em>direction</em> represent, and why the same vector can be drawn in different positions.</li>
+        <li><strong>Addition:</strong> describe tip-to-tail addition and how it relates to the parallelogram picture.</li>
+        <li><strong>Components:</strong> split a plane vector into <span class="math">x</span> and <span class="math">y</span> parts and read off <span class="math">(v_x,v_y)</span> from a diagram or from words.</li>
+        <li><strong>Unit vectors:</strong> state what <span class="math">\hat{\mathbf{\imath}}</span> and <span class="math">\hat{\mathbf{\jmath}}</span> are, and write any nonzero plane vector as “length × unit direction.”</li>
+        <li><strong>Components in arithmetic:</strong> add two vectors by adding components; multiply a vector by a scalar component-wise.</li>
+        <li><strong>Dot product:</strong> compute <span class="math">\mathbf{u}\cdot\mathbf{v}</span> from components; say what sign tells you about the angle; connect <span class="math">\mathbf{u}\cdot\mathbf{v}</span> to projection along <span class="math">\mathbf{u}</span> and to a work-style example.</li>
+        <li><strong>3D (glimpse):</strong> write a space vector as <span class="math">(v_x,v_y,v_z)</span>, give its length formula, and name the extra term in the dot product.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>11. What you can do next</h2>
+      <ul>
+        <li><strong>3D fluency:</strong> cross product, torque, planes and normals in space—same vector language with one more axis (see §9).</li>
+        <li><strong>Cross product</strong> (3D) produces a vector perpendicular to the two factors—useful for torque, rotation, and normals to surfaces.</li>
+        <li><strong>Matrices</strong> treat many vectors at once—linear transformations move whole spaces in a uniform way.</li>
+        <li><strong>Complex numbers</strong> add like 2D vectors; see <a href="index.html">Complex numbers — a visual brief</a>.</li>
+      </ul>
     </section>
 
     <footer>
-      Educational page — Hal AI by CJF · KaTeX via CDN · Open <code>index.html</code> in a browser or host on GitHub Pages.
+      Hal AI by CJF · KaTeX via CDN · Same folder as <code>index.html</code> for GitHub Pages.
     </footer>
   </div>
 
@@ -358,7 +501,7 @@
   </script>
   <script>
     (function () {
-      var scale = 62;
+      var scale = 60;
       function toXY(x, y, w, h) {
         var cx = w / 2, cy = h / 2;
         return { x: cx + x * scale, y: cy - y * scale };
@@ -397,8 +540,210 @@
       function len(x, y) {
         return Math.sqrt(x * x + y * y);
       }
+      function glimpseIsoProj(x, y, z, w, h) {
+        var cx0 = w * 0.46;
+        var cy0 = h * 0.58;
+        var isoS = 46;
+        var c30 = Math.cos(Math.PI / 6);
+        var s30 = Math.sin(Math.PI / 6);
+        return {
+          x: cx0 + isoS * (x - z) * c30,
+          y: cy0 - isoS * y + isoS * (x + z) * s30
+        };
+      }
+      function drawArrow(ctx, x0, y0, x1, y1, color, lw) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lw || 2.5;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.stroke();
+        var ang = Math.atan2(y1 - y0, x1 - x0);
+        var ah = 11;
+        var sp = 0.38;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x1 - ah * Math.cos(ang - sp), y1 - ah * Math.sin(ang - sp));
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x1 - ah * Math.cos(ang + sp), y1 - ah * Math.sin(ang + sp));
+        ctx.stroke();
+      }
+
+      function drawIntroVec() {
+        var canvas = document.getElementById("introVecCanvas");
+        if (!canvas) return;
+        var vx = parseFloat(document.getElementById("ivx").value);
+        var vy = parseFloat(document.getElementById("ivy").value);
+        document.getElementById("ivxv").textContent = vx.toFixed(2);
+        document.getElementById("ivyv").textContent = vy.toFixed(2);
+        var ctx = canvas.getContext("2d");
+        var w = canvas.width, h = canvas.height;
+        var cx = w / 2, cy = h / 2;
+        drawGrid(ctx, w, h);
+        var O = { x: cx, y: cy };
+        var P = toXY(vx, vy, w, h);
+        drawArrow(ctx, O.x, O.y, P.x, P.y, "rgba(56,189,248,0.95)", 3);
+        var mag = len(vx, vy);
+        var theta = Math.atan2(vy, vx);
+        var arcR = Math.min(48, 0.45 * scale * mag + 18);
+        if (mag > 0.08) {
+          var cAng = Math.atan2(P.y - cy, P.x - cx);
+          ctx.strokeStyle = "rgba(251,191,36,0.85)";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, arcR, 0, cAng, cAng < 0);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "13px Segoe UI, sans-serif";
+        ctx.fillText("|" + "\u2009" + "v" + "\u2009" + "| = " + mag.toFixed(3), 12, h - 44);
+        ctx.fillText("\u03b8 = " + theta.toFixed(3) + " rad  (" + (theta * 180 / Math.PI).toFixed(1) + "\u00b0)", 12, h - 26);
+        ctx.fillText("v = (" + vx.toFixed(2) + ", " + vy.toFixed(2) + ")", 12, h - 8);
+      }
+      var introCanvas = document.getElementById("introVecCanvas");
+      function clampIntroFromEvent(ev) {
+        var rect = introCanvas.getBoundingClientRect();
+        var sx = (ev.clientX - rect.left) / rect.width;
+        var sy = (ev.clientY - rect.top) / rect.height;
+        var w = introCanvas.width, h = introCanvas.height;
+        var vx = (sx * w - w / 2) / scale;
+        var vy = -(sy * h - h / 2) / scale;
+        vx = Math.max(-2.6, Math.min(2.6, vx));
+        vy = Math.max(-2.6, Math.min(2.6, vy));
+        return { vx: vx, vy: vy };
+      }
+      var introDrag = false;
+      introCanvas.addEventListener("pointerdown", function (e) {
+        introDrag = true;
+        introCanvas.setPointerCapture(e.pointerId);
+        var p = clampIntroFromEvent(e);
+        document.getElementById("ivx").value = String(Math.round(p.vx / 0.02) * 0.02);
+        document.getElementById("ivy").value = String(Math.round(p.vy / 0.02) * 0.02);
+        drawIntroVec();
+      });
+      introCanvas.addEventListener("pointermove", function (e) {
+        if (!introDrag) return;
+        var p = clampIntroFromEvent(e);
+        document.getElementById("ivx").value = String(Math.round(p.vx / 0.02) * 0.02);
+        document.getElementById("ivy").value = String(Math.round(p.vy / 0.02) * 0.02);
+        drawIntroVec();
+      });
+      introCanvas.addEventListener("pointerup", function () { introDrag = false; });
+      introCanvas.addEventListener("pointerleave", function () { introDrag = false; });
+      introCanvas.addEventListener("pointercancel", function () { introDrag = false; });
+      ["ivx", "ivy"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawIntroVec);
+      });
+      document.getElementById("resetIntro").addEventListener("click", function () {
+        document.getElementById("ivx").value = "1.4";
+        document.getElementById("ivy").value = "1";
+        drawIntroVec();
+      });
+      drawIntroVec();
+
+      function drawTipTail() {
+        var c = document.getElementById("tipTailCanvas");
+        if (!c) return;
+        var ux = parseFloat(document.getElementById("ttux").value);
+        var uy = parseFloat(document.getElementById("ttuy").value);
+        var vx = parseFloat(document.getElementById("ttvx").value);
+        var vy = parseFloat(document.getElementById("ttvy").value);
+        document.getElementById("ttuxv").textContent = ux.toFixed(2);
+        document.getElementById("ttuyv").textContent = uy.toFixed(2);
+        document.getElementById("ttvxv").textContent = vx.toFixed(2);
+        document.getElementById("ttvyv").textContent = vy.toFixed(2);
+        var sx = ux + vx;
+        var sy = uy + vy;
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var O = { x: w / 2, y: h / 2 };
+        var U = toXY(ux, uy, w, h);
+        var V0 = toXY(vx, vy, w, h);
+        var S = toXY(sx, sy, w, h);
+        var Vtip = { x: U.x + (V0.x - O.x), y: U.y + (V0.y - O.y) };
+        ctx.setLineDash([6, 5]);
+        ctx.strokeStyle = "rgba(167,139,250,0.45)";
+        ctx.lineWidth = 2;
+        drawArrow(ctx, O.x, O.y, V0.x, V0.y, "rgba(167,139,250,0.45)", 2);
+        ctx.setLineDash([]);
+        drawArrow(ctx, O.x, O.y, U.x, U.y, "rgba(74,222,128,0.95)", 3);
+        drawArrow(ctx, U.x, U.y, Vtip.x, Vtip.y, "rgba(167,139,250,0.95)", 3);
+        drawArrow(ctx, O.x, O.y, S.x, S.y, "rgba(251,191,36,0.98)", 3.5);
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = "rgba(148,163,184,0.35)";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(U.x, U.y);
+        ctx.lineTo(S.x, S.y);
+        ctx.moveTo(V0.x, V0.y);
+        ctx.lineTo(S.x, S.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("u+v = (" + sx.toFixed(2) + ", " + sy.toFixed(2) + ")", 10, h - 10);
+      }
+      ["ttux", "ttuy", "ttvx", "ttvy"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawTipTail);
+      });
+      document.getElementById("resetTip").addEventListener("click", function () {
+        document.getElementById("ttux").value = "1.1";
+        document.getElementById("ttuy").value = "0.5";
+        document.getElementById("ttvx").value = "-0.4";
+        document.getElementById("ttvy").value = "1";
+        drawTipTail();
+      });
+      drawTipTail();
+
+      function drawComp() {
+        var c = document.getElementById("compCanvas");
+        if (!c) return;
+        var vx = parseFloat(document.getElementById("cvx").value);
+        var vy = parseFloat(document.getElementById("cvy").value);
+        document.getElementById("cvxv").textContent = vx.toFixed(2);
+        document.getElementById("cvyv").textContent = vy.toFixed(2);
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var O = { x: w / 2, y: h / 2 };
+        var Px = toXY(vx, 0, w, h);
+        var P = toXY(vx, vy, w, h);
+        ctx.setLineDash([6, 4]);
+        ctx.strokeStyle = "rgba(74,222,128,0.85)";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(Px.x, Px.y);
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(167,139,250,0.9)";
+        ctx.beginPath();
+        ctx.moveTo(Px.x, Px.y);
+        ctx.lineTo(P.x, P.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        drawArrow(ctx, O.x, O.y, P.x, P.y, "rgba(56,189,248,0.95)", 3);
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "12px Segoe UI, sans-serif";
+        ctx.fillText("v_x along x", Px.x - 20, Px.y + (Px.y < O.y ? -10 : 22));
+        ctx.fillText("v_y along y", P.x + 8, (P.y + Px.y) / 2);
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("Tip: (" + vx.toFixed(2) + ", " + vy.toFixed(2) + ")", 10, h - 10);
+      }
+      ["cvx", "cvy"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawComp);
+      });
+      document.getElementById("resetComp").addEventListener("click", function () {
+        document.getElementById("cvx").value = "1.6";
+        document.getElementById("cvy").value = "1";
+        drawComp();
+      });
+      drawComp();
+
       function drawAdd() {
         var c = document.getElementById("addCanvas");
+        if (!c) return;
         var ux = parseFloat(document.getElementById("ux").value);
         var uy = parseFloat(document.getElementById("uy").value);
         var vx = parseFloat(document.getElementById("vx").value);
@@ -409,7 +754,7 @@
         document.getElementById("vyv").textContent = vy.toFixed(2);
         var sx = ux + vx;
         var sy = uy + vy;
-        var dot = ux * vx + uy * vy;
+        var dotProd = ux * vx + uy * vy;
         var lu = len(ux, uy);
         var lv = len(vx, vy);
         var ls = len(sx, sy);
@@ -420,20 +765,12 @@
         var U = toXY(ux, uy, w, h);
         var V = toXY(vx, vy, w, h);
         var S = toXY(sx, sy, w, h);
-        function arrow(x0, y0, x1, y1, color, lw) {
-          ctx.strokeStyle = color;
-          ctx.lineWidth = lw || 2.5;
-          ctx.beginPath();
-          ctx.moveTo(x0, y0);
-          ctx.lineTo(x1, y1);
-          ctx.stroke();
-        }
-        arrow(O.x, O.y, U.x, U.y, "rgba(74,222,128,0.95)", 3);
-        arrow(O.x, O.y, V.x, V.y, "rgba(167,139,250,0.95)", 3);
-        arrow(U.x, U.y, S.x, S.y, "rgba(167,139,250,0.4)", 2);
-        arrow(V.x, V.y, S.x, S.y, "rgba(74,222,128,0.4)", 2);
-        arrow(O.x, O.y, S.x, S.y, "rgba(251,191,36,0.95)", 3);
-        function dot(x, y, fill, label) {
+        drawArrow(ctx, O.x, O.y, U.x, U.y, "rgba(74,222,128,0.95)", 3);
+        drawArrow(ctx, O.x, O.y, V.x, V.y, "rgba(167,139,250,0.95)", 3);
+        drawArrow(ctx, U.x, U.y, S.x, S.y, "rgba(167,139,250,0.35)", 2);
+        drawArrow(ctx, V.x, V.y, S.x, S.y, "rgba(74,222,128,0.35)", 2);
+        drawArrow(ctx, O.x, O.y, S.x, S.y, "rgba(251,191,36,0.95)", 3.5);
+        function drawPoint(x, y, fill, label) {
           ctx.fillStyle = fill;
           ctx.beginPath();
           ctx.arc(x, y, 6, 0, Math.PI * 2);
@@ -447,19 +784,18 @@
             ctx.fillText(label, x + 10, y - 8);
           }
         }
-        dot(U.x, U.y, "#4ade80", "u");
-        dot(V.x, V.y, "#a78bfa", "v");
-        dot(S.x, S.y, "#fbbf24", "u+v");
+        drawPoint(U.x, U.y, "#4ade80", "u");
+        drawPoint(V.x, V.y, "#a78bfa", "v");
+        drawPoint(S.x, S.y, "#fbbf24", "u+v");
         ctx.fillStyle = "#94a3b8";
         ctx.font = "11px Segoe UI, sans-serif";
         ctx.fillText("u+v = (" + sx.toFixed(2) + ", " + sy.toFixed(2) + ")", 10, h - 52);
         ctx.fillText("|u| = " + lu.toFixed(3) + "   |v| = " + lv.toFixed(3) + "   |u+v| = " + ls.toFixed(3), 10, h - 36);
-        ctx.fillText("u·v = " + dot.toFixed(3), 10, h - 20);
+        ctx.fillText("u·v = " + dotProd.toFixed(3), 10, h - 20);
       }
       ["ux", "uy", "vx", "vy"].forEach(function (id) {
         document.getElementById(id).addEventListener("input", drawAdd);
       });
-      drawAdd();
       document.getElementById("resetAdd").addEventListener("click", function () {
         document.getElementById("ux").value = "1.2";
         document.getElementById("uy").value = "0.7";
@@ -467,9 +803,11 @@
         document.getElementById("vy").value = "1.1";
         drawAdd();
       });
+      drawAdd();
 
       function drawScal() {
         var c = document.getElementById("scalCanvas");
+        if (!c || !c.getContext) return;
         var vx = parseFloat(document.getElementById("svx").value);
         var vy = parseFloat(document.getElementById("svy").value);
         var coeff = parseFloat(document.getElementById("sc").value) * 0.01;
@@ -484,19 +822,9 @@
         var O = { x: w / 2, y: h / 2 };
         var V = toXY(vx, vy, w, h);
         var W = toXY(wx, wy, w, h);
-        ctx.strokeStyle = "rgba(167,139,250,0.9)";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(O.x, O.y);
-        ctx.lineTo(V.x, V.y);
-        ctx.stroke();
-        ctx.strokeStyle = "rgba(251,191,36,0.95)";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(O.x, O.y);
-        ctx.lineTo(W.x, W.y);
-        ctx.stroke();
-        function dot(x, y, fill, label) {
+        drawArrow(ctx, O.x, O.y, V.x, V.y, "rgba(167,139,250,0.9)", 3);
+        drawArrow(ctx, O.x, O.y, W.x, W.y, "rgba(251,191,36,0.95)", 3.5);
+        function drawPointSc(x, y, fill, label) {
           ctx.fillStyle = fill;
           ctx.beginPath();
           ctx.arc(x, y, 6, 0, Math.PI * 2);
@@ -508,8 +836,8 @@
           ctx.font = "13px Segoe UI, sans-serif";
           ctx.fillText(label, x + 8, y - 8);
         }
-        dot(V.x, V.y, "#a78bfa", "v");
-        dot(W.x, W.y, "#fbbf24", "cv");
+        drawPointSc(V.x, V.y, "#a78bfa", "v");
+        drawPointSc(W.x, W.y, "#fbbf24", "cv");
         ctx.fillStyle = "#94a3b8";
         ctx.font = "11px Segoe UI, sans-serif";
         ctx.fillText("cv = (" + wx.toFixed(2) + ", " + wy.toFixed(2) + ")   |cv| = " + len(wx, wy).toFixed(3), 10, h - 14);
@@ -517,13 +845,298 @@
       ["svx", "svy", "sc"].forEach(function (id) {
         document.getElementById(id).addEventListener("input", drawScal);
       });
-      drawScal();
       document.getElementById("resetScal").addEventListener("click", function () {
         document.getElementById("svx").value = "1";
         document.getElementById("svy").value = "0.5";
         document.getElementById("sc").value = "120";
         drawScal();
       });
+      drawScal();
+
+      function drawDot() {
+        var c = document.getElementById("dotCanvas");
+        if (!c) return;
+        var ux = parseFloat(document.getElementById("dux").value);
+        var uy = parseFloat(document.getElementById("duy").value);
+        var vx = parseFloat(document.getElementById("dvx").value);
+        var vy = parseFloat(document.getElementById("dvy").value);
+        document.getElementById("duxv").textContent = ux.toFixed(2);
+        document.getElementById("duyv").textContent = uy.toFixed(2);
+        document.getElementById("dvxv").textContent = vx.toFixed(2);
+        document.getElementById("dvyv").textContent = vy.toFixed(2);
+        var lu = len(ux, uy);
+        var lv = len(vx, vy);
+        var dotP = ux * vx + uy * vy;
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        drawGrid(ctx, w, h);
+        var O = { x: w / 2, y: h / 2 };
+        var U = toXY(ux, uy, w, h);
+        var V = toXY(vx, vy, w, h);
+        drawArrow(ctx, O.x, O.y, U.x, U.y, "rgba(74,222,128,0.95)", 3);
+        drawArrow(ctx, O.x, O.y, V.x, V.y, "rgba(167,139,250,0.95)", 3);
+        var cosTheta = lu > 1e-6 && lv > 1e-6 ? dotP / (lu * lv) : 0;
+        var projLen = lu > 1e-6 ? dotP / lu : 0;
+        var uxN = ux / lu, uyN = uy / lu;
+        var Px = O.x + uxN * projLen * scale;
+        var Py = O.y - uyN * projLen * scale;
+        ctx.strokeStyle = "rgba(251,191,36,0.95)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(O.x, O.y);
+        ctx.lineTo(Px, Py);
+        ctx.stroke();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = "rgba(148,163,184,0.75)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(V.x, V.y);
+        ctx.lineTo(Px, Py);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        var duxp = U.x - O.x, duyp = U.y - O.y;
+        var nU = Math.hypot(duxp, duyp);
+        var pdx = V.x - Px, pdy = V.y - Py;
+        var nP = Math.hypot(pdx, pdy);
+        var sq = 14;
+        if (nU > 1e-3 && nP > 1e-3) {
+          duxp /= nU;
+          duyp /= nU;
+          pdx /= nP;
+          pdy /= nP;
+          ctx.strokeStyle = "rgba(148,163,184,0.9)";
+          ctx.lineWidth = 1.25;
+          ctx.beginPath();
+          ctx.moveTo(Px, Py);
+          ctx.lineTo(Px + duxp * sq, Py + duyp * sq);
+          ctx.moveTo(Px, Py);
+          ctx.lineTo(Px + pdx * sq, Py + pdy * sq);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("u·v = " + dotP.toFixed(3) + "   cos\u03b8 = " + (lu * lv > 1e-6 ? cosTheta.toFixed(3) : "—"), 10, h - 36);
+        ctx.fillText("proj length along u: " + projLen.toFixed(3) + " (= u·v / |u|)", 10, h - 20);
+        ctx.fillText("|u| = " + lu.toFixed(3) + "   |v| = " + lv.toFixed(3), 10, h - 4);
+      }
+      ["dux", "duy", "dvx", "dvy"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", drawDot);
+      });
+      document.getElementById("resetDot").addEventListener("click", function () {
+        document.getElementById("dux").value = "1.5";
+        document.getElementById("duy").value = "0.3";
+        document.getElementById("dvx").value = "0.6";
+        document.getElementById("dvy").value = "1.2";
+        drawDot();
+      });
+      drawDot();
+
+      function drawGlimpse3d() {
+        var canvas = document.getElementById("glimpse3dCanvas");
+        if (!canvas) return;
+        var vx = parseFloat(document.getElementById("g3x").value);
+        var vy = parseFloat(document.getElementById("g3y").value);
+        var vz = parseFloat(document.getElementById("g3z").value);
+        document.getElementById("g3xv").textContent = vx.toFixed(2);
+        document.getElementById("g3yv").textContent = vy.toFixed(2);
+        document.getElementById("g3zv").textContent = vz.toFixed(2);
+        var w = canvas.width, h = canvas.height;
+        var ctx = canvas.getContext("2d");
+        function p(x, y, z) {
+          return glimpseIsoProj(x, y, z, w, h);
+        }
+        ctx.fillStyle = "#0a1224";
+        ctx.fillRect(0, 0, w, h);
+        function arrow3(x0, y0, z0, x1, y1, z1, color, lw) {
+          var P0 = p(x0, y0, z0), P1 = p(x1, y1, z1);
+          drawArrow(ctx, P0.x, P0.y, P1.x, P1.y, color, lw);
+        }
+        arrow3(0, 0, 0, 0, 2.35, 0, "rgba(56,189,248,0.9)", 2.5);
+        ctx.strokeStyle = "rgba(148,163,184,0.2)";
+        ctx.lineWidth = 1;
+        var g;
+        for (g = -2; g <= 2; g++) {
+          var A = p(g, 0, -2.5), B = p(g, 0, 2.5);
+          ctx.beginPath();
+          ctx.moveTo(A.x, A.y);
+          ctx.lineTo(B.x, B.y);
+          ctx.stroke();
+          A = p(-2.5, 0, g);
+          B = p(2.5, 0, g);
+          ctx.beginPath();
+          ctx.moveTo(A.x, A.y);
+          ctx.lineTo(B.x, B.y);
+          ctx.stroke();
+        }
+        arrow3(0, 0, 0, 2.35, 0, 0, "rgba(74,222,128,0.78)", 2.5);
+        arrow3(0, 0, 0, 0, 0, 2.35, "rgba(167,139,250,0.8)", 2.5);
+        var mag = Math.sqrt(vx * vx + vy * vy + vz * vz);
+        if (mag > 0.04) {
+          arrow3(0, 0, 0, vx, vy, vz, "rgba(251,191,36,0.96)", 3.5);
+        }
+        var tx = p(2.48, 0, 0), ty = p(0, 2.48, 0), tz = p(0, 0, 2.48);
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "14px Segoe UI, sans-serif";
+        ctx.fillText("x", tx.x + 8, tx.y + 5);
+        ctx.fillText("y", ty.x + 6, ty.y - 6);
+        ctx.fillText("z", tz.x - 14, tz.y + 5);
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("Illustration: isometric-style projection (flat screen, not true perspective)", 10, 18);
+        ctx.fillText("v = (" + vx.toFixed(2) + ", " + vy.toFixed(2) + ", " + vz.toFixed(2) + ")   |v| = " + mag.toFixed(3), 10, h - 10);
+      }
+
+      var spinAngle = 0;
+      var spinPaused = false;
+      var spinAnimVisible = true;
+
+      function glimpseSpinTransform(x, y, z, spin) {
+        var alpha = 0.27;
+        var y1 = y * Math.cos(alpha) - z * Math.sin(alpha);
+        var z1 = y * Math.sin(alpha) + z * Math.cos(alpha);
+        var x1 = x;
+        var c = Math.cos(spin), s = Math.sin(spin);
+        return { x: c * x1 + s * z1, y: y1, z: -s * x1 + c * z1 };
+      }
+
+      function drawGlimpse3dSpin(spin) {
+        var canvas = document.getElementById("glimpse3dAnimCanvas");
+        if (!canvas) return;
+        var vx = parseFloat(document.getElementById("g3x").value);
+        var vy = parseFloat(document.getElementById("g3y").value);
+        var vz = parseFloat(document.getElementById("g3z").value);
+        var w = canvas.width, h = canvas.height;
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#0a1224";
+        ctx.fillRect(0, 0, w, h);
+
+        function T(x, y, z) {
+          return glimpseSpinTransform(x, y, z, spin);
+        }
+        function P(x, y, z) {
+          var q = T(x, y, z);
+          return glimpseIsoProj(q.x, q.y, q.z, w, h);
+        }
+        function depthKey(x0, y0, z0, x1, y1, z1) {
+          var a = T(x0, y0, z0), b = T(x1, y1, z1);
+          return (a.x + a.y + a.z + b.x + b.y + b.z) * 0.16666667;
+        }
+        function pushSeg(arr, x0, y0, z0, x1, y1, z1, color, lw) {
+          arr.push({
+            pa: P(x0, y0, z0),
+            pb: P(x1, y1, z1),
+            dz: depthKey(x0, y0, z0, x1, y1, z1),
+            color: color,
+            lw: lw
+          });
+        }
+
+        var B = 0.94;
+        var step = 0.235;
+        var gridCol = "rgba(100, 116, 139, 0.28)";
+        var edgeCol = "rgba(186, 200, 218, 0.58)";
+        var segs = [];
+        var t;
+        for (t = -B; t <= B + 0.0001; t += step) {
+          pushSeg(segs, -B, t, B, B, t, B, gridCol, 1);
+          pushSeg(segs, t, -B, B, t, B, B, gridCol, 1);
+          pushSeg(segs, -B, t, -B, B, t, -B, gridCol, 1);
+          pushSeg(segs, t, -B, -B, t, B, -B, gridCol, 1);
+          pushSeg(segs, B, t, -B, B, t, B, gridCol, 1);
+          pushSeg(segs, B, -B, t, B, B, t, gridCol, 1);
+          pushSeg(segs, -B, t, -B, -B, t, B, gridCol, 1);
+          pushSeg(segs, -B, -B, t, -B, B, t, gridCol, 1);
+          pushSeg(segs, -B, B, t, B, B, t, gridCol, 1);
+          pushSeg(segs, t, B, -B, t, B, B, gridCol, 1);
+          pushSeg(segs, -B, -B, t, B, -B, t, gridCol, 1);
+          pushSeg(segs, t, -B, -B, t, -B, B, gridCol, 1);
+        }
+        var edges = [
+          [-B, -B, -B, B, -B, -B], [B, -B, -B, B, B, -B], [B, B, -B, -B, B, -B], [-B, B, -B, -B, -B, -B],
+          [-B, -B, B, B, -B, B], [B, -B, B, B, B, B], [B, B, B, -B, B, B], [-B, B, B, -B, -B, B],
+          [-B, -B, -B, -B, -B, B], [B, -B, -B, B, -B, B], [B, B, -B, B, B, B], [-B, B, -B, -B, B, B]
+        ];
+        for (var ei = 0; ei < edges.length; ei++) {
+          var e = edges[ei];
+          pushSeg(segs, e[0], e[1], e[2], e[3], e[4], e[5], edgeCol, 2);
+        }
+        segs.sort(function (a, b) {
+          return a.dz - b.dz;
+        });
+        for (var si = 0; si < segs.length; si++) {
+          var sg = segs[si];
+          ctx.strokeStyle = sg.color;
+          ctx.lineWidth = sg.lw;
+          ctx.beginPath();
+          ctx.moveTo(sg.pa.x, sg.pa.y);
+          ctx.lineTo(sg.pb.x, sg.pb.y);
+          ctx.stroke();
+        }
+
+        function arrow3s(x0, y0, z0, x1, y1, z1, color, lw) {
+          var P0 = P(x0, y0, z0), P1 = P(x1, y1, z1);
+          drawArrow(ctx, P0.x, P0.y, P1.x, P1.y, color, lw);
+        }
+        arrow3s(0, 0, 0, 2.35, 0, 0, "rgba(74,222,128,0.82)", 2.5);
+        arrow3s(0, 0, 0, 0, 0, 2.35, "rgba(167,139,250,0.82)", 2.5);
+        arrow3s(0, 0, 0, 0, 2.35, 0, "rgba(56,189,248,0.9)", 2.5);
+        var mag = Math.sqrt(vx * vx + vy * vy + vz * vz);
+        if (mag > 0.04) {
+          arrow3s(0, 0, 0, vx, vy, vz, "rgba(251,191,36,0.97)", 3.5);
+        }
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("Rotating scene (same v as fixed snapshot) · depth-sorted wireframe", 10, 18);
+        ctx.fillText("v = (" + vx.toFixed(2) + ", " + vy.toFixed(2) + ", " + vz.toFixed(2) + ")   |v| = " + mag.toFixed(3), 10, h - 10);
+      }
+
+      function refreshGlimpse3dBoth() {
+        drawGlimpse3d();
+        drawGlimpse3dSpin(spinAngle);
+      }
+
+      function spinLoop() {
+        if (spinAnimVisible && !document.hidden && !spinPaused) {
+          spinAngle += 0.0108;
+        }
+        if (spinAnimVisible && !document.hidden) {
+          drawGlimpse3dSpin(spinAngle);
+        }
+        requestAnimationFrame(spinLoop);
+      }
+
+      var animCanvas3d = document.getElementById("glimpse3dAnimCanvas");
+      if (animCanvas3d && typeof IntersectionObserver !== "undefined") {
+        new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (en) {
+              spinAnimVisible = en.isIntersecting;
+            });
+          },
+          { root: null, threshold: 0.06 }
+        ).observe(animCanvas3d);
+      }
+
+      var btnSpin = document.getElementById("toggleSpin3d");
+      if (btnSpin) {
+        btnSpin.addEventListener("click", function () {
+          spinPaused = !spinPaused;
+          btnSpin.textContent = spinPaused ? "Resume rotation" : "Pause rotation";
+          btnSpin.setAttribute("aria-pressed", spinPaused ? "true" : "false");
+        });
+      }
+
+      ["g3x", "g3y", "g3z"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", refreshGlimpse3dBoth);
+      });
+      document.getElementById("resetG3").addEventListener("click", function () {
+        document.getElementById("g3x").value = "1";
+        document.getElementById("g3y").value = "0.7";
+        document.getElementById("g3z").value = "0.5";
+        refreshGlimpse3dBoth();
+      });
+      drawGlimpse3d();
+      drawGlimpse3dSpin(0);
+      spinLoop();
     })();
   </script>
 </body>
