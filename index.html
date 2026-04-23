@@ -92,6 +92,26 @@
       border-radius: 12px;
       font-size: 0.95rem;
     }
+    .worked-example {
+      margin: 0.95rem 0;
+      padding: 0.8rem 0.95rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      background: rgba(15, 23, 42, 0.55);
+    }
+    .worked-title {
+      margin: 0 0 0.45rem;
+      color: #bae6fd;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .worked-steps {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.89rem;
+      color: #dbeafe;
+    }
+    .worked-steps li { margin: 0.28rem 0; }
     ul { margin: 0.5rem 0 0.5rem 1.1rem; padding: 0; }
     li { margin: 0.35rem 0; }
     .diagram-wrap {
@@ -315,6 +335,16 @@
       <p>
         Try the sliders below: <span class="math">z_1</span> is green, <span class="math">z_2</span> is violet, and their sum <span class="math">z_1+z_2</span> is gold.
       </p>
+      <div class="worked-example">
+        <p class="worked-title">Worked example: adding two complex numbers</p>
+        <ol class="worked-steps">
+          <li>Let <span class="math">z_1 = 2 + 3i</span> and <span class="math">z_2 = -1 + 4i</span>.</li>
+          <li>Add real parts: <span class="math">2 + (-1) = 1</span>.</li>
+          <li>Add imaginary parts: <span class="math">3 + 4 = 7</span>, so imaginary part is <span class="math">7i</span>.</li>
+          <li>Combine: <span class="math">z_1 + z_2 = 1 + 7i</span>.</li>
+          <li>Coordinate view: <span class="math">(2,3)+(-1,4)=(1,7)</span> — the same result as vector addition.</li>
+        </ol>
+      </div>
       <div class="diagram-wrap" style="max-width: 520px;">
         <canvas id="addCanvas" width="520" height="520" aria-label="Addition of two complex numbers"></canvas>
       </div>
@@ -341,6 +371,41 @@
         <span class="math">e^{i\theta_1} e^{i\theta_2} = e^{i(\theta_1+\theta_2)}</span>.
         So the product has modulus <span class="math">r_1 r_2</span> and argument <span class="math">\theta_1 + \theta_2</span> (up to adding <span class="math">2\pi</span> if you need another branch). The spread-out rectangular formula above is doing this geometry in disguise.
       </p>
+      <div class="worked-example">
+        <p class="worked-title">Worked example: multiplying two complex numbers</p>
+        <ol class="worked-steps">
+          <li>Let <span class="math">z_1 = 2 + 3i</span> and <span class="math">z_2 = 1 - 4i</span>.</li>
+          <li>Expand: <span class="math">(2+3i)(1-4i)=2-8i+3i-12i^2</span>.</li>
+          <li>Use <span class="math">i^2=-1</span> carefully: the term <span class="math">-12i^2</span> means <span class="math">-12\times(i^2)</span>. Substitute <span class="math">i^2=-1</span> to get <span class="math">-12\times(-1)=+12</span>, so the line becomes <span class="math">2-8i+3i+12</span>.</li>
+          <li>Collect real and imaginary terms: <span class="math">(2+12)+(-8i+3i)=14-5i</span>.</li>
+          <li>So <span class="math">z_1z_2=14-5i</span>. (Checks formula: <span class="math">ac-bd=2\cdot1-3(-4)=14</span>, <span class="math">ad+bc=2(-4)+3(1)=-5</span>.)</li>
+        </ol>
+      </div>
+      <div class="worked-example">
+        <p class="worked-title">Worked example: scale then rotate (same numbers)</p>
+        <ol class="worked-steps">
+          <li>Start with <span class="math">z_1=2+3i</span> and <span class="math">z_2=1-4i</span>.</li>
+          <li>Lengths: <span class="math">|z_1|=\sqrt{2^2+3^2}=\sqrt{13}\approx3.606</span>, <span class="math">|z_2|=\sqrt{1^2+(-4)^2}=\sqrt{17}\approx4.123</span>.</li>
+          <li>Angles: <span class="math">\theta_1=\arg(z_1)=\operatorname{atan2}(3,2)\approx0.983</span> rad, <span class="math">\theta_2=\arg(z_2)=\operatorname{atan2}(-4,1)\approx-1.326</span> rad.</li>
+          <li>Scale rule: <span class="math">|z_1z_2|=|z_1||z_2|=\sqrt{13}\sqrt{17}=\sqrt{221}\approx14.866</span>.</li>
+          <li>Rotation rule: <span class="math">\arg(z_1z_2)=\theta_1+\theta_2\approx0.983+(-1.326)=-0.343</span> rad.</li>
+          <li>Check with rectangular result: <span class="math">z_1z_2=14-5i</span>, so <span class="math">|14-5i|=\sqrt{221}</span> and <span class="math">\arg(14-5i)=\operatorname{atan2}(-5,14)\approx-0.343</span> rad (same values).</li>
+        </ol>
+      </div>
+      <div class="diagram-wrap" style="max-width: 520px;">
+        <canvas id="mulGeoCanvas" width="520" height="520" aria-label="Scale and rotate view of complex multiplication"></canvas>
+      </div>
+      <div class="controls">
+        <div class="control-actions" style="justify-content: center;">
+          <button type="button" id="mulGeoPlay">Pause</button>
+          <button type="button" id="mulGeoPrev">Prev stage</button>
+          <button type="button" id="mulGeoNext">Next stage</button>
+          <button type="button" id="mulGeoReset">Reset</button>
+        </div>
+      </div>
+      <p class="diagram-hint" id="mulGeoCaption">
+        Stage 1: original vectors <span class="math">z_1</span> and <span class="math">z_2</span>.
+      </p>
       <div class="callout">\displaystyle r_1 e^{i\theta_1} \cdot r_2 e^{i\theta_2} = r_1 r_2\, e^{i(\theta_1+\theta_2)}</div>
       <p>
         <strong>Rotation and scaling.</strong> Picture each complex number as an arrow from the origin. Multiplying <span class="math">z_1</span> by <span class="math">z_2</span> <strong>stretches</strong> that first arrow by <span class="math">|z_2|</span> and <strong>rotates</strong> it about the origin through <span class="math">\theta_2</span>, so it ends up pointing along <span class="math">\theta_1+\theta_2</span>.
@@ -348,16 +413,35 @@
         If <span class="math">|z_2|=1</span>, there is no stretch—multiplication by <span class="math">z_2</span> is a <strong>pure rotation</strong> of the plane (the unit complex numbers are exactly the rotations about the origin).
         If <span class="math">z_2</span> is a positive real, you only <strong>rescale</strong> along the same ray.
         More generally, multiplying the <em>whole plane</em> by a fixed <span class="math">w</span> applies the same factor <span class="math">|w|</span> and the same turn <span class="math">\arg(w)</span> to <strong>every</strong> point from the origin—one of the reasons complex numbers are so useful in waves, circuits, and linear systems.
-        The diagram shows <span class="math">z_1</span>, <span class="math">z_2</span>, and their product <span class="math">z_1 z_2</span>.
+      </p>
+      <h3>Worked build-up diagram (same example)</h3>
+      <p>
+        This first diagram animates the worked expansion
+        <span class="math">(2+3i)(1-4i)=2-8i+3i-12i^2=14-5i</span> as chained vectors.
+        Each step adds one term so you can see exactly how the partial sums move in the Argand plane.
+      </p>
+      <div class="diagram-wrap" style="max-width: 520px;">
+        <canvas id="mulBuildCanvas" width="520" height="520" aria-label="Step-by-step build-up of complex multiplication example"></canvas>
+      </div>
+      <div class="controls">
+        <div class="control-actions" style="justify-content: center;">
+          <button type="button" id="mulBuildPlay">Pause</button>
+          <button type="button" id="mulBuildPrev">Prev step</button>
+          <button type="button" id="mulBuildNext">Next step</button>
+          <button type="button" id="mulBuildReset">Reset</button>
+        </div>
+      </div>
+      <p class="diagram-hint" id="mulBuildCaption">
+        Step 0: start at the origin.
       </p>
       <div class="diagram-wrap" style="max-width: 520px;">
         <canvas id="mulCanvas" width="520" height="520" aria-label="Multiplication of two complex numbers"></canvas>
       </div>
       <div class="controls">
-        <div class="slider-row slider-z1"><label><span class="math">z_1</span> angle <span class="math">\theta_1</span></label><input type="range" id="t1" min="-314" max="314" value="220" /><span class="val" id="t1v">2.20</span></div>
-        <div class="slider-row slider-z1"><label><span class="math">|z_1|</span></label><input type="range" id="r1" min="0.2" max="2" step="0.02" value="1.73" /><span class="val" id="r1v">1.73</span></div>
-        <div class="slider-row slider-z2"><label><span class="math">z_2</span> angle <span class="math">\theta_2</span></label><input type="range" id="t2" min="-314" max="314" value="214" /><span class="val" id="t2v">2.14</span></div>
-        <div class="slider-row slider-z2"><label><span class="math">|z_2|</span></label><input type="range" id="r2" min="0.2" max="2" step="0.02" value="1.73" /><span class="val" id="r2v">1.73</span></div>
+        <div class="slider-row slider-z1"><label><span class="math">z_1</span> angle <span class="math">\theta_1</span></label><input type="range" id="t1" min="-314" max="314" value="98" /><span class="val" id="t1v">0.98</span></div>
+        <div class="slider-row slider-z1"><label><span class="math">|z_1|</span></label><input type="range" id="r1" min="0.2" max="5" step="0.02" value="3.61" /><span class="val" id="r1v">3.61</span></div>
+        <div class="slider-row slider-z2"><label><span class="math">z_2</span> angle <span class="math">\theta_2</span></label><input type="range" id="t2" min="-314" max="314" value="-133" /><span class="val" id="t2v">-1.33</span></div>
+        <div class="slider-row slider-z2"><label><span class="math">|z_2|</span></label><input type="range" id="r2" min="0.2" max="5" step="0.02" value="4.12" /><span class="val" id="r2v">4.12</span></div>
         <div class="control-actions">
           <button type="button" id="resetMul" aria-label="Reset angles and moduli to default">Reset</button>
           <button type="button" id="snapT1" class="snap-z1" aria-label="Snap θ₁ to nearest multiple of π/2">Snap θ₁ → π/2 grid</button>
@@ -366,7 +450,6 @@
       </div>
       <p class="diagram-hint">
         Arcs at the origin show <span class="math">\theta_1</span>, <span class="math">\theta_2</span>, and <span class="math">\theta_1+\theta_2</span> from the positive real axis.
-        The softer violet arc from the axis to <span class="math">z_2</span> is the argument of <span class="math">z_2</span>; the brighter dashed arc from the <span class="math">z_1</span> ray to the <span class="math">z_1 z_2</span> ray is the same angle <span class="math">\theta_2</span> as a rotation applied after <span class="math">z_1</span>.
         Angle slider values are <strong>hundredths of a radian</strong> (radians = slider × 0.01).
         <strong>Snap → π/2 grid</strong> moves that angle to the nearest of 0, ±π/2, ±π (principal axes on this range).
       </p>
@@ -447,7 +530,7 @@
       var scale = 68;
       var DEFAULT_POLAR = { a: 2.1, b: 2.1 };
       var DEFAULT_ADD = { a1: 1, b1: 0.6, a2: -0.4, b2: 1.1 };
-      var DEFAULT_MUL = { t1: 220, r1: 1.73, t2: 214, r2: 1.73 };
+      var DEFAULT_MUL = { t1: 98, r1: 3.61, t2: -133, r2: 4.12 };
       /** Nearest multiple of π/2 in slider units (−314…314 ≈ −π…π). */
       function snapAngleSliderToPiHalf(v) {
         var grid = [-314, -157, 0, 157, 314];
@@ -494,8 +577,17 @@
         ctx.stroke();
         ctx.fillStyle = "#64748b";
         ctx.font = "13px Segoe UI, sans-serif";
-        ctx.fillText("Re", w - 28, cy - 8);
-        ctx.fillText("Im", cx + 8, 18);
+        ctx.fillText("Real", w - 40, cy - 8);
+        ctx.fillText("Imaginary", cx + 10, 18);
+        ctx.font = "10px Segoe UI, sans-serif";
+        ctx.fillStyle = "rgba(148,163,184,0.85)";
+        for (g = -4; g <= 4; g++) {
+          if (g === 0 || Math.abs(g % 2) === 1) continue;
+          var tx = toXY(g, 0, w, h);
+          ctx.fillText(String(g), tx.x - 4, cy + 12);
+          var ty = toXY(0, g, w, h);
+          ctx.fillText(String(g), cx + 6, ty.y + 3);
+        }
       }
       function drawPolarDiagram(a, b) {
         var canvas = document.getElementById("argand");
@@ -737,12 +829,70 @@
         var pi = a1 * b2 + b1 * a2;
         var ctx = c.getContext("2d");
         var w = c.width, h = c.height;
-        drawGrid(ctx, w, h);
+        var minX = -15, maxX = 15, minY = -15, maxY = 15;
+        var unit = Math.min(w / (maxX - minX), h / (maxY - minY));
+        var xPad = (w - unit * (maxX - minX)) * 0.5;
+        var yPad = (h - unit * (maxY - minY)) * 0.5;
+        function toMulXY(x, y) {
+          return {
+            x: xPad + (x - minX) * unit,
+            y: h - yPad - (y - minY) * unit
+          };
+        }
+        function drawMulGrid() {
+          ctx.fillStyle = "#0a1224";
+          ctx.fillRect(0, 0, w, h);
+          ctx.strokeStyle = "rgba(148,163,184,0.12)";
+          ctx.lineWidth = 1;
+          var g;
+          for (g = Math.ceil(minX); g <= Math.floor(maxX); g++) {
+            var vA = toMulXY(g, minY);
+            var vB = toMulXY(g, maxY);
+            ctx.beginPath();
+            ctx.moveTo(vA.x, vA.y);
+            ctx.lineTo(vB.x, vB.y);
+            ctx.stroke();
+            var hA = toMulXY(minX, g);
+            var hB = toMulXY(maxX, g);
+            ctx.beginPath();
+            ctx.moveTo(hA.x, hA.y);
+            ctx.lineTo(hB.x, hB.y);
+            ctx.stroke();
+          }
+          ctx.strokeStyle = "rgba(148,163,184,0.35)";
+          ctx.lineWidth = 1.5;
+          var x0a = toMulXY(minX, 0), x0b = toMulXY(maxX, 0);
+          var y0a = toMulXY(0, minY), y0b = toMulXY(0, maxY);
+          ctx.beginPath();
+          ctx.moveTo(x0a.x, x0a.y);
+          ctx.lineTo(x0b.x, x0b.y);
+          ctx.moveTo(y0a.x, y0a.y);
+          ctx.lineTo(y0b.x, y0b.y);
+          ctx.stroke();
+          ctx.fillStyle = "#64748b";
+          ctx.font = "13px Segoe UI, sans-serif";
+          ctx.fillText("Real", w - 42, x0a.y - 10);
+          ctx.fillText("Imaginary", y0a.x + 10, yPad + 12);
+          ctx.font = "10px Segoe UI, sans-serif";
+          ctx.fillStyle = "rgba(148,163,184,0.85)";
+          for (g = Math.ceil(minX); g <= Math.floor(maxX); g++) {
+            if (g === 0 || Math.abs(g % 2) === 1) continue;
+            var tx = toMulXY(g, 0);
+            if (tx.x > 14 && tx.x < w - 12) {
+              ctx.fillText(String(g), tx.x - 4, x0a.y + 12);
+            }
+            var ty = toMulXY(0, g);
+            if (ty.y > 14 && ty.y < h - 10) {
+              ctx.fillText(String(g), y0a.x + 6, ty.y + 3);
+            }
+          }
+        }
+        drawMulGrid();
         var cx = w / 2, cy = h / 2;
         var O = { x: cx, y: cy };
-        var Z1 = toXY(a1, b1, w, h);
-        var Z2 = toXY(a2, b2, w, h);
-        var P = toXY(pr, pi, w, h);
+        var Z1 = toMulXY(a1, b1);
+        var Z2 = toMulXY(a2, b2);
+        var P = toMulXY(pr, pi);
         var tSum = t1 + t2;
         var argProd = Math.atan2(pi, pr);
         var tSumPr = normAngle(tSum);
@@ -835,6 +985,418 @@
         el.value = String(snapAngleSliderToPiHalf(parseInt(el.value, 10) || 0));
         drawMul();
       });
+
+      var mulBuildState = {
+        step: 0,
+        playing: true,
+        timer: null
+      };
+      var mulBuildSteps = [
+        { dx: 2, dy: 0, color: "#60a5fa", label: "2" },
+        { dx: 0, dy: -8, color: "#f472b6", label: "-8i" },
+        { dx: 0, dy: 3, color: "#22d3ee", label: "+3i" },
+        { dx: 12, dy: 0, color: "#34d399", label: "-12i² = +12" }
+      ];
+      var mulBuildZ1 = { x: 2, y: 3 };
+      var mulBuildZ2 = { x: 1, y: -4 };
+      var mulBuildCaptions = [
+        "Step 0: start at the origin.",
+        "Step 1: add 2 (the 2×1 term).",
+        "Step 2: add -8i (the 2×(-4i) term).",
+        "Step 3: add +3i (the 3i×1 term).",
+        "Step 4: add -12i², then use i²=-1 so this is +12; final point is 14-5i."
+      ];
+      function drawMulBuild() {
+        var c = document.getElementById("mulBuildCanvas");
+        if (!c) return;
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        var minX = -15, maxX = 15, minY = -15, maxY = 15;
+        var unit = Math.min(w / (maxX - minX), h / (maxY - minY));
+        var xPad = (w - unit * (maxX - minX)) * 0.5;
+        var yPad = (h - unit * (maxY - minY)) * 0.5;
+        function toBuildXY(x, y) {
+          var px = xPad + (x - minX) * unit;
+          var py = h - yPad - (y - minY) * unit;
+          return { x: px, y: py };
+        }
+        function drawBuildGrid() {
+          ctx.fillStyle = "#0a1224";
+          ctx.fillRect(0, 0, w, h);
+          ctx.strokeStyle = "rgba(148,163,184,0.12)";
+          ctx.lineWidth = 1;
+          var gx;
+          for (gx = Math.ceil(minX); gx <= Math.floor(maxX); gx++) {
+            var p1 = toBuildXY(gx, minY);
+            var p2 = toBuildXY(gx, maxY);
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+          var gy;
+          for (gy = Math.ceil(minY); gy <= Math.floor(maxY); gy++) {
+            var q1 = toBuildXY(minX, gy);
+            var q2 = toBuildXY(maxX, gy);
+            ctx.beginPath();
+            ctx.moveTo(q1.x, q1.y);
+            ctx.lineTo(q2.x, q2.y);
+            ctx.stroke();
+          }
+          ctx.strokeStyle = "rgba(148,163,184,0.45)";
+          ctx.lineWidth = 1.7;
+          var xAxisA = toBuildXY(minX, 0), xAxisB = toBuildXY(maxX, 0);
+          ctx.beginPath();
+          ctx.moveTo(xAxisA.x, xAxisA.y);
+          ctx.lineTo(xAxisB.x, xAxisB.y);
+          ctx.stroke();
+          var yAxisA = toBuildXY(0, minY), yAxisB = toBuildXY(0, maxY);
+          ctx.beginPath();
+          ctx.moveTo(yAxisA.x, yAxisA.y);
+          ctx.lineTo(yAxisB.x, yAxisB.y);
+          ctx.stroke();
+          ctx.fillStyle = "#64748b";
+          ctx.font = "12px Segoe UI, sans-serif";
+          ctx.fillText("Real", w - 40, xAxisA.y - 10);
+          ctx.fillText("Imaginary", yAxisB.x + 10, yPad + 12);
+          ctx.font = "10px Segoe UI, sans-serif";
+          ctx.fillStyle = "rgba(148,163,184,0.85)";
+          for (gx = Math.ceil(minX); gx <= Math.floor(maxX); gx++) {
+            if (gx === 0 || Math.abs(gx % 2) === 1) continue;
+            var tx = toBuildXY(gx, 0);
+            if (tx.x > 14 && tx.x < w - 12) {
+              ctx.fillText(String(gx), tx.x - 4, xAxisA.y + 12);
+            }
+          }
+          for (gy = Math.ceil(minY); gy <= Math.floor(maxY); gy++) {
+            if (gy === 0 || Math.abs(gy % 2) === 1) continue;
+            var ty = toBuildXY(0, gy);
+            if (ty.y > 14 && ty.y < h - 10) {
+              ctx.fillText(String(gy), yAxisA.x + 6, ty.y + 3);
+            }
+          }
+        }
+        drawBuildGrid();
+        var x = 0, y = 0;
+        var i;
+        function drawBuildArrow(x0, y0, x1, y1, color) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 3.2;
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+          var ang = Math.atan2(y1 - y0, x1 - x0);
+          var ah = 11;
+          var sp = 0.36;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x1 - ah * Math.cos(ang - sp), y1 - ah * Math.sin(ang - sp));
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x1 - ah * Math.cos(ang + sp), y1 - ah * Math.sin(ang + sp));
+          ctx.stroke();
+        }
+        function drawRefArrow(x0, y0, x1, y1, color, label) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2.1;
+          ctx.setLineDash([6, 5]);
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          var ang = Math.atan2(y1 - y0, x1 - x0);
+          var ah = 9;
+          var sp = 0.36;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x1 - ah * Math.cos(ang - sp), y1 - ah * Math.sin(ang - sp));
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x1 - ah * Math.cos(ang + sp), y1 - ah * Math.sin(ang + sp));
+          ctx.stroke();
+          ctx.fillStyle = color;
+          ctx.font = "12px Segoe UI, sans-serif";
+          ctx.fillText(label, x1 + 7, y1 - 8);
+        }
+        var O = toBuildXY(0, 0);
+        var Z1 = toBuildXY(mulBuildZ1.x, mulBuildZ1.y);
+        var Z2 = toBuildXY(mulBuildZ2.x, mulBuildZ2.y);
+        drawRefArrow(O.x, O.y, Z1.x, Z1.y, "rgba(74,222,128,0.9)", "z₁ = 2 + 3i");
+        drawRefArrow(O.x, O.y, Z2.x, Z2.y, "rgba(167,139,250,0.9)", "z₂ = 1 - 4i");
+        for (i = 0; i < mulBuildState.step; i++) {
+          var st = mulBuildSteps[i];
+          var nx = x + st.dx;
+          var ny = y + st.dy;
+          var A = toBuildXY(x, y);
+          var B = toBuildXY(nx, ny);
+          drawBuildArrow(A.x, A.y, B.x, B.y, st.color);
+          ctx.fillStyle = st.color;
+          ctx.font = "12px Segoe UI, sans-serif";
+          ctx.fillText(st.label, (A.x + B.x) * 0.5 + 6, (A.y + B.y) * 0.5 - 8);
+          ctx.beginPath();
+          ctx.arc(B.x, B.y, 4.2, 0, Math.PI * 2);
+          ctx.fill();
+          x = nx;
+          y = ny;
+        }
+        var P = toBuildXY(x, y);
+        if (mulBuildState.step === mulBuildSteps.length) {
+          drawBuildArrow(O.x, O.y, P.x, P.y, "rgba(251,191,36,0.98)");
+          ctx.fillStyle = "#fef08a";
+          ctx.font = "12px Segoe UI, sans-serif";
+          ctx.fillText("Resultant: 14 - 5i", (O.x + P.x) * 0.5 + 8, (O.y + P.y) * 0.5 - 10);
+        }
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.arc(P.x, P.y, 6.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#0f172a";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "13px Segoe UI, sans-serif";
+        ctx.fillText("Partial sum: " + x.toFixed(0) + (y < 0 ? " - " : " + ") + Math.abs(y).toFixed(0) + "i", 10, h - 34);
+        if (mulBuildState.step === mulBuildSteps.length) {
+          ctx.fillStyle = "#fbbf24";
+          ctx.fillText("Final product: (2+3i)(1-4i) = 14 - 5i", 10, h - 14);
+        } else {
+          ctx.fillStyle = "#94a3b8";
+          ctx.fillText("Building terms: 2  +  (-8i)  +  (3i)  +  (-12i²)", 10, h - 14);
+        }
+        var cap = document.getElementById("mulBuildCaption");
+        if (cap) cap.textContent = mulBuildCaptions[mulBuildState.step];
+      }
+      function mulBuildTickForward() {
+        if (mulBuildState.step < mulBuildSteps.length) mulBuildState.step += 1;
+        else mulBuildState.step = 0;
+        drawMulBuild();
+      }
+      function mulBuildStartAuto() {
+        if (mulBuildState.timer) clearInterval(mulBuildState.timer);
+        mulBuildState.timer = setInterval(function () {
+          if (!mulBuildState.playing) return;
+          mulBuildTickForward();
+        }, 2100);
+      }
+      function mulBuildSetPlayLabel() {
+        var btn = document.getElementById("mulBuildPlay");
+        if (!btn) return;
+        btn.textContent = mulBuildState.playing ? "Pause" : "Play";
+      }
+      var mulBuildPlayBtn = document.getElementById("mulBuildPlay");
+      var mulBuildPrevBtn = document.getElementById("mulBuildPrev");
+      var mulBuildNextBtn = document.getElementById("mulBuildNext");
+      var mulBuildResetBtn = document.getElementById("mulBuildReset");
+      if (mulBuildPlayBtn) {
+        mulBuildPlayBtn.addEventListener("click", function () {
+          mulBuildState.playing = !mulBuildState.playing;
+          mulBuildSetPlayLabel();
+        });
+      }
+      if (mulBuildPrevBtn) {
+        mulBuildPrevBtn.addEventListener("click", function () {
+          mulBuildState.playing = false;
+          mulBuildSetPlayLabel();
+          mulBuildState.step = Math.max(0, mulBuildState.step - 1);
+          drawMulBuild();
+        });
+      }
+      if (mulBuildNextBtn) {
+        mulBuildNextBtn.addEventListener("click", function () {
+          mulBuildState.playing = false;
+          mulBuildSetPlayLabel();
+          mulBuildState.step = Math.min(mulBuildSteps.length, mulBuildState.step + 1);
+          drawMulBuild();
+        });
+      }
+      if (mulBuildResetBtn) {
+        mulBuildResetBtn.addEventListener("click", function () {
+          mulBuildState.step = 0;
+          mulBuildState.playing = true;
+          mulBuildSetPlayLabel();
+          drawMulBuild();
+        });
+      }
+      drawMulBuild();
+      mulBuildSetPlayLabel();
+      mulBuildStartAuto();
+
+      var mulGeoState = { stage: 0, playing: true, timer: null };
+      var mulGeoCaptions = [
+        "Stage 1: original vectors z₁ and z₂.",
+        "Stage 2: scale z₁ by |z₂| (same angle θ₁, longer length |z₁||z₂|).",
+        "Stage 3: rotate that scaled vector by +θ₂ to reach z₁z₂ (angle θ₁+θ₂)."
+      ];
+      function drawMulGeo() {
+        var c = document.getElementById("mulGeoCanvas");
+        if (!c) return;
+        var ctx = c.getContext("2d");
+        var w = c.width, h = c.height;
+        var minX = -15, maxX = 15, minY = -15, maxY = 15;
+        var unit = Math.min(w / (maxX - minX), h / (maxY - minY));
+        var xPad = (w - unit * (maxX - minX)) * 0.5;
+        var yPad = (h - unit * (maxY - minY)) * 0.5;
+        function toGeoXY(x, y) {
+          return {
+            x: xPad + (x - minX) * unit,
+            y: h - yPad - (y - minY) * unit
+          };
+        }
+        function drawGeoGrid() {
+          ctx.fillStyle = "#0a1224";
+          ctx.fillRect(0, 0, w, h);
+          ctx.strokeStyle = "rgba(148,163,184,0.12)";
+          ctx.lineWidth = 1;
+          var g;
+          for (g = Math.ceil(minX); g <= Math.floor(maxX); g++) {
+            var vA = toGeoXY(g, minY), vB = toGeoXY(g, maxY);
+            ctx.beginPath(); ctx.moveTo(vA.x, vA.y); ctx.lineTo(vB.x, vB.y); ctx.stroke();
+            var hA = toGeoXY(minX, g), hB = toGeoXY(maxX, g);
+            ctx.beginPath(); ctx.moveTo(hA.x, hA.y); ctx.lineTo(hB.x, hB.y); ctx.stroke();
+          }
+          ctx.strokeStyle = "rgba(148,163,184,0.35)";
+          ctx.lineWidth = 1.5;
+          var x0a = toGeoXY(minX, 0), x0b = toGeoXY(maxX, 0), y0a = toGeoXY(0, minY), y0b = toGeoXY(0, maxY);
+          ctx.beginPath();
+          ctx.moveTo(x0a.x, x0a.y); ctx.lineTo(x0b.x, x0b.y);
+          ctx.moveTo(y0a.x, y0a.y); ctx.lineTo(y0b.x, y0b.y);
+          ctx.stroke();
+          ctx.fillStyle = "#64748b";
+          ctx.font = "12px Segoe UI, sans-serif";
+          ctx.fillText("Real", w - 40, x0a.y - 10);
+          ctx.fillText("Imaginary", y0a.x + 10, yPad + 12);
+          ctx.font = "10px Segoe UI, sans-serif";
+          ctx.fillStyle = "rgba(148,163,184,0.85)";
+          for (g = Math.ceil(minX); g <= Math.floor(maxX); g++) {
+            if (g === 0 || Math.abs(g % 2) === 1) continue;
+            var tx = toGeoXY(g, 0);
+            if (tx.x > 14 && tx.x < w - 12) {
+              ctx.fillText(String(g), tx.x - 4, x0a.y + 12);
+            }
+            var ty = toGeoXY(0, g);
+            if (ty.y > 14 && ty.y < h - 10) {
+              ctx.fillText(String(g), y0a.x + 6, ty.y + 3);
+            }
+          }
+        }
+        function drawGeoArrow(A, B, color, width, dash) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = width || 2.6;
+          ctx.setLineDash(dash || []);
+          ctx.beginPath();
+          ctx.moveTo(A.x, A.y);
+          ctx.lineTo(B.x, B.y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          var ang = Math.atan2(B.y - A.y, B.x - A.x);
+          var ah = 10, sp = 0.36;
+          ctx.beginPath();
+          ctx.moveTo(B.x, B.y);
+          ctx.lineTo(B.x - ah * Math.cos(ang - sp), B.y - ah * Math.sin(ang - sp));
+          ctx.moveTo(B.x, B.y);
+          ctx.lineTo(B.x - ah * Math.cos(ang + sp), B.y - ah * Math.sin(ang + sp));
+          ctx.stroke();
+        }
+        drawGeoGrid();
+        var z1 = { x: 2, y: 3 };
+        var z2 = { x: 1, y: -4 };
+        var prod = { x: 14, y: -5 };
+        var r2 = Math.sqrt(17);
+        var scaled = { x: z1.x * r2, y: z1.y * r2 };
+        var O = toGeoXY(0, 0);
+        var Z1 = toGeoXY(z1.x, z1.y);
+        var Z2 = toGeoXY(z2.x, z2.y);
+        var S = toGeoXY(scaled.x, scaled.y);
+        var P = toGeoXY(prod.x, prod.y);
+        drawGeoArrow(O, Z1, "rgba(74,222,128,0.95)", 2.8, []);
+        drawGeoArrow(O, Z2, "rgba(167,139,250,0.95)", 2.8, []);
+        ctx.fillStyle = "#86efac"; ctx.font = "12px Segoe UI, sans-serif"; ctx.fillText("z₁", Z1.x + 8, Z1.y - 8);
+        ctx.fillStyle = "#c4b5fd"; ctx.fillText("z₂", Z2.x + 8, Z2.y - 8);
+        var th1 = Math.atan2(z1.y, z1.x);
+        var th2 = Math.atan2(z2.y, z2.x);
+        strokeMathArc(ctx, O.x, O.y, 20, 0, th1, "rgba(74,222,128,0.6)", 1.8, []);
+        strokeMathArc(ctx, O.x, O.y, 30, 0, th2, "rgba(167,139,250,0.5)", 1.8, []);
+        labelOnMathArc(ctx, O.x, O.y, 20, th1 * 0.5, "θ₁", "#86efac");
+        labelOnMathArc(ctx, O.x, O.y, 30, th2 * 0.5, "θ₂", "#c4b5fd");
+        if (mulGeoState.stage >= 1) {
+          drawGeoArrow(O, S, "rgba(56,189,248,0.95)", 3, [6, 4]);
+          ctx.fillStyle = "#7dd3fc";
+          ctx.fillText("|z₂|·z₁ (scaled)", S.x + 8, S.y - 8);
+        }
+        if (mulGeoState.stage >= 2) {
+          drawGeoArrow(O, P, "rgba(251,191,36,0.98)", 3.4, []);
+          ctx.fillStyle = "#fcd34d";
+          ctx.fillText("z₁z₂ = 14 - 5i", P.x + 8, P.y - 8);
+          var thSum = th1 + th2;
+          strokeMathArc(ctx, O.x, O.y, 40, th1, thSum, "rgba(192,132,252,0.95)", 2.3, [7, 5]);
+          strokeMathArc(ctx, O.x, O.y, 56, 0, thSum, "rgba(251,191,36,0.55)", 2.4, [3, 4]);
+          labelOnMathArc(ctx, O.x, O.y, 40, th1 + th2 * 0.5, "+θ₂", "#e9d5ff");
+          labelOnMathArc(ctx, O.x, O.y, 56, thSum * 0.5, "θ₁+θ₂", "#fde68a");
+          ctx.fillStyle = "rgba(233,213,255,0.9)";
+          ctx.font = "11px Segoe UI, sans-serif";
+          ctx.fillText("dashed violet: +θ₂ rotation from z₁", 10, 20);
+          ctx.fillStyle = "rgba(196,181,253,0.9)";
+          ctx.fillText("soft violet: θ₂ from axis to z₂", 10, 36);
+          ctx.fillStyle = "rgba(253,230,138,0.95)";
+          ctx.fillText("gold ghost: θ₁+θ₂ from axis to product", 10, 52);
+        }
+        var cap = document.getElementById("mulGeoCaption");
+        if (cap) cap.textContent = mulGeoCaptions[mulGeoState.stage];
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "11px Segoe UI, sans-serif";
+        ctx.fillText("|z₁|≈3.606, |z₂|≈4.123, |z₁z₂|≈14.866", 10, h - 34);
+        ctx.fillText("θ₁≈0.983, θ₂≈-1.326, θ₁+θ₂≈-0.343 rad", 10, h - 18);
+      }
+      function mulGeoSetPlayLabel() {
+        var btn = document.getElementById("mulGeoPlay");
+        if (!btn) return;
+        btn.textContent = mulGeoState.playing ? "Pause" : "Play";
+      }
+      function mulGeoStartAuto() {
+        if (mulGeoState.timer) clearInterval(mulGeoState.timer);
+        mulGeoState.timer = setInterval(function () {
+          if (!mulGeoState.playing) return;
+          mulGeoState.stage = (mulGeoState.stage + 1) % 3;
+          drawMulGeo();
+        }, 2200);
+      }
+      var mulGeoPlayBtn = document.getElementById("mulGeoPlay");
+      var mulGeoPrevBtn = document.getElementById("mulGeoPrev");
+      var mulGeoNextBtn = document.getElementById("mulGeoNext");
+      var mulGeoResetBtn = document.getElementById("mulGeoReset");
+      if (mulGeoPlayBtn) {
+        mulGeoPlayBtn.addEventListener("click", function () {
+          mulGeoState.playing = !mulGeoState.playing;
+          mulGeoSetPlayLabel();
+        });
+      }
+      if (mulGeoPrevBtn) {
+        mulGeoPrevBtn.addEventListener("click", function () {
+          mulGeoState.playing = false;
+          mulGeoSetPlayLabel();
+          mulGeoState.stage = (mulGeoState.stage + 2) % 3;
+          drawMulGeo();
+        });
+      }
+      if (mulGeoNextBtn) {
+        mulGeoNextBtn.addEventListener("click", function () {
+          mulGeoState.playing = false;
+          mulGeoSetPlayLabel();
+          mulGeoState.stage = (mulGeoState.stage + 1) % 3;
+          drawMulGeo();
+        });
+      }
+      if (mulGeoResetBtn) {
+        mulGeoResetBtn.addEventListener("click", function () {
+          mulGeoState.stage = 0;
+          mulGeoState.playing = true;
+          mulGeoSetPlayLabel();
+          drawMulGeo();
+        });
+      }
+      drawMulGeo();
+      mulGeoSetPlayLabel();
+      mulGeoStartAuto();
     })();
   </script>
 </body>

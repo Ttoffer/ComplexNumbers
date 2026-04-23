@@ -100,6 +100,26 @@
       border-radius: 12px;
       font-size: 0.95rem;
     }
+    .worked-example {
+      margin: 0.95rem 0;
+      padding: 0.8rem 0.95rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      background: rgba(15, 23, 42, 0.55);
+    }
+    .worked-title {
+      margin: 0 0 0.45rem;
+      color: #bae6fd;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .worked-steps {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.89rem;
+      color: #dbeafe;
+    }
+    .worked-steps li { margin: 0.28rem 0; }
     .example-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -339,6 +359,16 @@
       <p>
         The diagram below is the same parallelogram picture as in the complex-numbers note: green <span class="math">\mathbf{u}</span>, violet <span class="math">\mathbf{v}</span>, gold <span class="math">\mathbf{u}+\mathbf{v}</span>. The readout also shows lengths and the dot product (next section).
       </p>
+      <div class="worked-example">
+        <p class="worked-title">Worked example: vector addition by components</p>
+        <ol class="worked-steps">
+          <li>Let <span class="math">\mathbf{u}=(3,-2)</span> and <span class="math">\mathbf{v}=(-1,5)</span>.</li>
+          <li>Add <span class="math">x</span>-components: <span class="math">3+(-1)=2</span>.</li>
+          <li>Add <span class="math">y</span>-components: <span class="math">-2+5=3</span>.</li>
+          <li>So <span class="math">\mathbf{u}+\mathbf{v}=(2,3)</span>.</li>
+          <li>Tip-to-tail interpretation: move 3 right and 2 down, then 1 left and 5 up; net movement is 2 right and 3 up.</li>
+        </ol>
+      </div>
       <div class="diagram-wrap">
         <canvas id="addCanvas" width="520" height="520" aria-label="Addition with components"></canvas>
       </div>
@@ -393,6 +423,16 @@
       <p>
         <strong>Work (motivating example):</strong> constant force <span class="math">\mathbf{F}</span> acting through displacement <span class="math">\mathbf{d}</span> gives work <span class="math">W = \mathbf{F}\cdot\mathbf{d}</span> — only the part of the force <em>along</em> the motion contributes.
       </p>
+      <div class="worked-example">
+        <p class="worked-title">Worked example: dot product step by step</p>
+        <ol class="worked-steps">
+          <li>Let <span class="math">\mathbf{u}=(2,3)</span> and <span class="math">\mathbf{v}=(4,-1)</span>.</li>
+          <li>Multiply matching components: <span class="math">2\cdot4=8</span> and <span class="math">3\cdot(-1)=-3</span>.</li>
+          <li>Add those products: <span class="math">\mathbf{u}\cdot\mathbf{v}=8+(-3)=5</span>.</li>
+          <li>Projection check: <span class="math">|\mathbf{u}|=\sqrt{13}</span>, so scalar projection of <span class="math">\mathbf{v}</span> on <span class="math">\mathbf{u}</span> is <span class="math">(\mathbf{u}\cdot\mathbf{v})/|\mathbf{u}|=5/\sqrt{13}\approx1.39</span>.</li>
+          <li>Since the dot product is positive, the vectors point more with each other than against each other (acute angle).</li>
+        </ol>
+      </div>
       <p class="diagram-hint">
         Gold segment on green <span class="math">\mathbf{u}</span> = projection of violet <span class="math">\mathbf{v}</span> onto <span class="math">\mathbf{u}</span>; dashed line shows the right angle. Readout: <span class="math">\mathbf{u}\cdot\mathbf{v}</span>, <span class="math">\cos\theta</span>, projection length.
       </p>
@@ -534,8 +574,17 @@
         ctx.stroke();
         ctx.fillStyle = "#64748b";
         ctx.font = "13px Segoe UI, sans-serif";
-        ctx.fillText("x", w - 22, cy - 8);
-        ctx.fillText("y", cx + 8, 18);
+        ctx.fillText("Real", w - 40, cy - 8);
+        ctx.fillText("Imaginary", cx + 10, 18);
+        ctx.font = "10px Segoe UI, sans-serif";
+        ctx.fillStyle = "rgba(148,163,184,0.85)";
+        for (g = -5; g <= 5; g++) {
+          if (g === 0 || Math.abs(g % 2) === 1) continue;
+          var tx = toXY(g, 0, w, h);
+          ctx.fillText(String(g), tx.x - 4, cy + 12);
+          var ty = toXY(0, g, w, h);
+          ctx.fillText(String(g), cx + 6, ty.y + 3);
+        }
       }
       function len(x, y) {
         return Math.sqrt(x * x + y * y);
